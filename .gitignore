@@ -1,6 +1,7 @@
 # build and idea
 .idea
 cmake-build-debug
+build
 
 # Compiled Object files
 *.slo

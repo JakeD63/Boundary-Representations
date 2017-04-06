@@ -1,22 +1,58 @@
-#include <stdio.h>
+
 #include <opencv2/opencv.hpp>
+#include <iostream>
+using namespace std;
 using namespace cv;
-int main(int argc, char** argv )
+
+int display_img( string name, Mat dsp );
+
+int main(int, char** argv)
 {
-    if ( argc != 2 )
-    {
-        printf("usage: DisplayImage.out <Image_Path>\n");
+    // Load the image
+    Mat src = imread(argv[1]);
+    // Check if everything was fine
+    if (!src.data)
         return -1;
-    }
-    Mat image;
-    image = imread( argv[1], 1 );
-    if ( !image.data )
-    {
-        printf("No image data \n");
-        return -1;
-    }
-    namedWindow("Display Image", WINDOW_AUTOSIZE );
-    imshow("Display Image", image);
-    waitKey(0);
+
+    Mat src_gray;
+    cvtColor( src, src_gray, CV_BGR2GRAY);
+
+    Mat blr_gray;
+    blur( src_gray, blr_gray, Size(3,3));
+
+    Mat edges;
+    Canny( blr_gray, edges, 60, 80, 3 );
+
+    Mat dst;
+    dst = Scalar::all(0);
+
+    src.copyTo(dst, edges);
+
+    Mat bin;
+    cvtColor(dst, dst, CV_BGR2GRAY);
+    threshold(dst, bin, 40, 255, CV_THRESH_BINARY | CV_THRESH_OTSU);
+
+    display_img(string("PRE-MORPH"), bin);
+/*
+    Mat morph;
+    Mat element = getStructuringElement(MORPH_CROSS, Size(3, 3), Point(1, 1) );
+
+    morphologyEx(bin, morph, MORPH_OPEN, element);
+
+    display_img(string("BLACKHAT"), morph);
+
+    Mat dist;
+    distanceTransform(morph, dist, CV_DIST_L2, 3);
+    normalize(dist, dist, 0, 1., NORM_MINMAX);
+
+    display_img(string("Distance"), dist);
+*/
     return 0;
+}
+
+int display_img( string name, Mat dsp )
+{
+    imshow(name, dsp);
+    int c = waitKey(0);
+    return c;
 }
