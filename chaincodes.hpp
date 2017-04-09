@@ -1,3 +1,7 @@
+
+#ifndef __ChainCode_HPP
+#define __ChainCode_HPP
+
 #include <opencv2/opencv.hpp>
 #include <vector>
 
@@ -29,4 +33,8 @@ class ChainCode {
 		//! basic constructor
 		ChainCode(cv::Mat img);
 
+		//! basic destructor
+		~ChainCode();
 };
+
+#endif
