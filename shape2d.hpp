@@ -3,14 +3,15 @@
 
 #include <opencv2/opencv.hpp>
 #include <vector>
-#include <pair>
+#include <utility> // std::pair
+
 
 class shape2D {
 
 	std::vector<std::pair<unsigned int, unsigned int> > boundary;
 
 	public:
-		shape2D(cv::Mat);
+		shape2D(cv::Mat img);
 		~shape2D();
 
 };

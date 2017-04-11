@@ -1,7 +1,7 @@
 #include <opencv2/opencv.hpp>
 #include <iostream>
 
-#include "chaincodes.hpp"
+#include "shape2d.hpp"
 
 using namespace std;
 using namespace cv;
@@ -18,9 +18,9 @@ int main(int, char** argv)
 
     cvtColor(src, src, CV_BGR2GRAY);
     Mat bin_img;
-    threshold(src, bin_img, 128, 255, CV_THRESH_BINARY | CV_THRESH_OTSU);
+    threshold(src, bin_img, 128, 255, 1);
 
-    auto tst  = ChainCode{ bin_img };
+	auto shap = shape2D(bin_img);
+
     return 0;
-
 }
