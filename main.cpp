@@ -21,9 +21,10 @@ int main(int, char** argv)
 	threshold(src, bin_img, 128, 255, 1);
 
 	auto shape = shape2D(bin_img);	
-/*
-	imshow("BINIMG", bin_img);
+	auto res = shape.to_mat();
+
+	imshow("BINIMG", res);
 	waitKey(0);
-*/
+
 	return 0;
 }
