@@ -3,12 +3,13 @@
 
 #include <opencv2/opencv.hpp>
 #include <vector>
-#include <utility> // std::pair
-
 
 class shape2D {
-
-	std::vector<std::pair<unsigned int, unsigned int> > boundary;
+	private:
+		cv::Point find_tm_lm(cv::Mat img);
+		void rotate_cw(const cv::Point p, cv::Point& c_n);
+		void find_next(cv::Point& p, cv::Point& c_n);
+		std::vector<cv::Point> boundary;
 
 	public:
 		shape2D(cv::Mat img);
