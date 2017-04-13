@@ -7,13 +7,15 @@
 class FourierDescriptor {
 	
 	private:
-		std::vector<std::complex<double> > out;
+
+		cv::Mat fd;
+		cv::Mat pt;
 
 	public:
 		FourierDescriptor(shape2D& shape);
 		~FourierDescriptor();
 
-		cv::Mat to_mat();
+		shape2D to_mat();
 };
 
 #endif

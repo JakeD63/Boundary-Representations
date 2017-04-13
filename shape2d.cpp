@@ -67,6 +67,30 @@ void shape2D::rotate_cw(const Point p, Point& c_n)
 
 }
 
+shape2D::shape2D(std::vector<Point> ivec)
+{
+	boundary = ivec;
+
+	max_x = boundary[0].x;
+	max_y = boundary[0].y;
+	min_x = boundary[0].x;
+	min_y = boundary[0].y;
+
+	for( auto b : boundary )
+	{
+		if ( b.x > max_x )
+			max_x = b.x;
+		if ( b.y > max_y )
+			max_y = b.y;
+		if ( b.x < min_x )
+			min_x = b.x;
+		if ( b.y < min_y )
+			min_y = b.y;
+	}
+
+	return;
+}
+
 Point shape2D::find_tm_lm(Mat img)
 {	
 
@@ -180,6 +204,11 @@ Mat shape2D::to_mat() {
 	}
 
 	return output;
+}
+
+std::vector<Point> shape2D::get_boundary()
+{
+	return boundary;
 }
 
 //! operator[] allows indexing of the underlying vector

@@ -22,6 +22,9 @@ int main(int, char** argv)
 
 	auto shape = shape2D(bin_img);	
 	auto fd = FourierDescriptor(shape);
-	
+	auto m = fd.to_mat();
+
+	imshow("Fourier", m.to_mat());
+
 	return 0;
 }

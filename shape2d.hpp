@@ -14,11 +14,13 @@ class shape2D {
 
 	public:
 		shape2D(cv::Mat img);
+		shape2D(std::vector<cv::Point> ivec);
 		~shape2D();
 
 		cv::Mat to_mat();
 		cv::Point& operator[] (int a);
 		unsigned int size();
+		std::vector<cv::Point> get_boundary();
 };
 
 #endif
