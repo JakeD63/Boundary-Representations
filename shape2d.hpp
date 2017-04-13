@@ -17,6 +17,8 @@ class shape2D {
 		~shape2D();
 
 		cv::Mat to_mat();
+		cv::Point& operator[] (int a);
+		unsigned int size();
 };
 
 #endif

@@ -1,6 +1,6 @@
 #include <opencv2/opencv.hpp>
 #include <iostream>
-
+#include "fourier_desc.hpp"
 #include "shape2d.hpp"
 
 using namespace std;
@@ -21,10 +21,7 @@ int main(int, char** argv)
 	threshold(src, bin_img, 128, 255, 1);
 
 	auto shape = shape2D(bin_img);	
-	auto res = shape.to_mat();
-
-	imshow("BINIMG", res);
-	waitKey(0);
-
+	auto fd = FourierDescriptor(shape);
+	
 	return 0;
 }

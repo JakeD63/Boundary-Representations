@@ -182,6 +182,17 @@ Mat shape2D::to_mat() {
 	return output;
 }
 
+//! operator[] allows indexing of the underlying vector
+Point& shape2D::operator[] (int a) {
+	return boundary[a];
+}
+
+//! size grabs the size of the boundary
+unsigned int shape2D::size()
+{
+	return boundary.size();
+}
+
 
 //! shape2D destructor
 shape2D::~shape2D()
