@@ -2,6 +2,7 @@
 #include <iostream>
 
 #include "shape2d.hpp"
+#include "ChainCode.h"
 
 using namespace std;
 using namespace cv;
@@ -20,10 +21,10 @@ int main(int, char** argv)
 	Mat bin_img;
 	threshold(src, bin_img, 128, 255, 1);
 
-	auto shape = shape2D(bin_img);	
-	auto res = shape.to_mat();
+    auto cc = ChainCode(bin_img);
+	Mat out = cc.to_mat();
 
-	imshow("BINIMG", res);
+	imshow("BINIMG", out);
 	waitKey(0);
 
 	return 0;
