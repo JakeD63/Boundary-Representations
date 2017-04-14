@@ -6,6 +6,7 @@
 
 ChainCode::ChainCode(cv::Mat img) : shape2D(img){
 	genChainCode();
+	normalizeRot();
 }
 
 //use boundary to generate chain code
@@ -42,6 +43,24 @@ void ChainCode::genChainCode() {
 	}
 }
 
+//take first difference of directions
+//in counterclockwise direction
+// c[i+1] - c[i] (+8 if neg)
+void ChainCode::normalizeRot() {
+	vector<int> tempCode;
+	int r;
+	for(int i = 0; i < this->chainCode.size() - 1; i++) {
+		r = this->chainCode.at(i + 1) - this->chainCode.at(i);
+		if(r < 0)
+			r += 8;
+		tempCode.push_back(r);
+
+	}
+	this->chainCode = tempCode;
+
+}
+
+
 vector<int> ChainCode::getCode() {
 	return this->chainCode;
 }
@@ -51,3 +70,5 @@ ostream &operator<<(ostream &os, const ChainCode &cc) {
 		os << i;
 	return os;
 }
+
+

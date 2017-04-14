@@ -15,6 +15,7 @@ class ChainCode : public shape2D {
 		friend ostream& operator<<(ostream& os, const ChainCode& cc);
     private:
         void genChainCode();
+		void normalizeRot();
         std::vector<int> chainCode;
 
 };
