@@ -11,8 +11,10 @@ using namespace cv;
 class ChainCode : public shape2D {
     public:
         ChainCode(cv::Mat img);
+		vector<int> getCode();
+		friend ostream& operator<<(ostream& os, const ChainCode& cc);
     private:
-        std::vector<int> genChainCode();
+        void genChainCode();
         std::vector<int> chainCode;
 
 };
