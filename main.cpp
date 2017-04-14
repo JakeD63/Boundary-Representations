@@ -21,10 +21,19 @@ int main(int, char** argv)
 	threshold(src, bin_img, 128, 255, 1);
 
 	auto shape = shape2D(bin_img);	
+	auto smat = shape.to_mat();
+	imshow("Shape: ", smat);
 	auto fd = FourierDescriptor(shape);
-	auto m = fd.to_mat();
+	auto nshape = fd.to_shape2D();
+	
+	imshow("FD: ", nshape.to_mat());
+	
+	fd.set_desc_count(528);
+	
+	auto fshape = fd.to_shape2D();
+	imshow("FD(40) :", fshape.to_mat());
 
-	imshow("Fourier", m.to_mat());
+	waitKey(0);
 
 	return 0;
 }

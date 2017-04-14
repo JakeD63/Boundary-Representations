@@ -1,5 +1,8 @@
 #include <opencv2/opencv.hpp>
 #include <iostream>
+#include <iterator>
+#include <algorithm>
+#include <numeric>
 #include "shape2d.hpp"
 
 
@@ -69,23 +72,23 @@ void shape2D::rotate_cw(const Point p, Point& c_n)
 
 shape2D::shape2D(std::vector<Point> ivec)
 {
-	boundary = ivec;
+	std::copy(ivec.begin(), ivec.end(), std::back_inserter(boundary));
 
 	max_x = boundary[0].x;
 	max_y = boundary[0].y;
 	min_x = boundary[0].x;
 	min_y = boundary[0].y;
 
-	for( auto b : boundary )
+	for( auto a : boundary )
 	{
-		if ( b.x > max_x )
-			max_x = b.x;
-		if ( b.y > max_y )
-			max_y = b.y;
-		if ( b.x < min_x )
-			min_x = b.x;
-		if ( b.y < min_y )
-			min_y = b.y;
+		if ( a.x > max_x )
+			max_x = a.x;
+		if ( a.x < min_x )
+			min_x = a.x;
+		if ( a.y > max_y )
+			max_y = a.y;
+		if ( a.y < min_y )
+			min_y = a.y;
 	}
 
 	return;
