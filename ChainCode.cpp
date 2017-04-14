@@ -3,3 +3,6 @@
 //
 
 #include "ChainCode.h"
+std::vector<int> ChainCode::genChainCode() {
+	
+}
