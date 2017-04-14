@@ -95,7 +95,7 @@ shape2D::shape2D(Mat img)
 
 	// Get the topmost leftmost
 	auto tm_lm = find_tm_lm(img);
-	std::cout << "tm_lm value: " << tm_lm.x << " " << tm_lm.y << std::endl;
+	//std::cout << "tm_lm value: " << tm_lm.x << " " << tm_lm.y << std::endl;
 
 	boundary.push_back(tm_lm);
 
@@ -111,9 +111,9 @@ shape2D::shape2D(Mat img)
 	max_x = tm_lm.x;
 	min_x = tm_lm.x;
 
-	std::cout << "c_n initialized " << c_n.x << " " << c_n.y << std::endl;
+	//std::cout << "c_n initialized " << c_n.x << " " << c_n.y << std::endl;
 
-	std::cout << "Beginning boundary follow" << std::endl;
+	//std::cout << "Beginning boundary follow" << std::endl;
 
 
 	while(!done)	
@@ -130,7 +130,7 @@ shape2D::shape2D(Mat img)
 			rotate_cw(boundary.back(), c_n);
 			in = img.at<uchar>(c_n);
 
-			std::cout << "Rotated: " << c_n.x << " " << c_n.y << " " << in.val[0] << std::endl;
+			//std::cout << "Rotated: " << c_n.x << " " << c_n.y << " " << in.val[0] << std::endl;
 
 		} while(in.val[0] != 255);
 		
@@ -154,9 +154,9 @@ shape2D::shape2D(Mat img)
 			c_n = save;
 		}
 
-		std::cout << "Vector size: " << boundary.size() << 
-			" Last Found " << 
-			boundary.back().x << " " << boundary.back().y << std::endl;
+		//std::cout << "Vector size: " << boundary.size() <<
+		//	" Last Found " <<
+		//	boundary.back().x << " " << boundary.back().y << std::endl;
 	}
 
 	// Normalize all of the points so that there's a 1 px buffer around the shape
