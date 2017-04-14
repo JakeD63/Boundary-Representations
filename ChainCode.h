@@ -6,9 +6,11 @@
 #define DIP3_CHAINCODE_H
 #include "shape2d.hpp"
 
-class ChainCode : shape2D {
+using namespace std;
+using namespace cv;
+class ChainCode : public shape2D {
     public:
-        ChainCode(cv::Mat img): shape2D(img){};
+        ChainCode(cv::Mat img);
     private:
         std::vector<int> genChainCode();
         std::vector<int> chainCode;
