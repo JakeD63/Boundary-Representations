@@ -14,9 +14,12 @@ class ChainCode : public shape2D {
 		vector<int> getCode();
 		friend ostream& operator<<(ostream& os, const ChainCode& cc);
     private:
+		void scaleBoundary();
         void genChainCode();
 		void normalizeRot();
+		int distance(Point a, Point b);
         std::vector<int> chainCode;
+		std::vector<Point> scaldedBoundary;
 
 };
 

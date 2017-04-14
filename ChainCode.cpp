@@ -9,6 +9,17 @@ ChainCode::ChainCode(cv::Mat img) : shape2D(img){
 	normalizeRot();
 }
 
+//make grid larger, so we only take
+// a sampling of points along the boundary
+//this allows similar shapes to have much
+//similar chain codes
+
+//take distance to each corner from point
+//closest corner is added to new boundary point list
+void ChainCode::scaleBoundary() {
+
+}
+
 //use boundary to generate chain code
 //directions and method from page 800
 void ChainCode::genChainCode() {
@@ -63,6 +74,10 @@ void ChainCode::normalizeRot() {
 
 vector<int> ChainCode::getCode() {
 	return this->chainCode;
+}
+
+int ChainCode::distance(Point a, Point b) {
+	return sqrt(pow((b.x - a.x),2) + pow((b.y - a.y),2));
 }
 
 ostream &operator<<(ostream &os, const ChainCode &cc) {
