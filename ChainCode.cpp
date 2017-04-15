@@ -4,24 +4,80 @@
 
 #include "ChainCode.h"
 
-ChainCode::ChainCode(cv::Mat img) : shape2D(img){
-	genChainCode();
-	normalizeRot();
+ChainCode::ChainCode(cv::Mat img, int gridScale) : shape2D(img){
+	scaleBoundary(gridScale);
+	for(Point i : scaldedBoundary)
+		cout << i.x << ", " << i.y << endl;
+	//genChainCode();
+	//normalizeRot();
 }
 
 //make grid larger, so we only take
-// a sampling of points along the boundary
+//a sampling of points along the boundary
 //this allows similar shapes to have much
 //similar chain codes
 
 //take distance to each corner from point
 //closest corner is added to new boundary point list
-void ChainCode::scaleBoundary() {
+void ChainCode::scaleBoundary(int gridScale) {
+	Point c, tl, tr, bl, br;
+	vector<int> distances; //tl, tr, bl, br
+	vector<Point> boundary;
+	int min_p;
+	for(int i = 0; i < this->boundary.size(); i++) {
+		c = this->boundary.at(i);
+		//upper left
+		tl.x = roundDown(c.x, gridScale);
+		tl.y = roundUp(c.y, gridScale);
+		//upper right
+		tr.x = roundUp(c.x, gridScale);
+		tr.y = roundUp(c.y, gridScale);
+		//bottom left
+		bl.x = roundDown(c.x, gridScale);
+		bl.y = roundDown(c.y, gridScale);
+		//bottom right
+		br.x = roundUp(c.x, gridScale);
+		br.y = roundDown(c.y, gridScale);
+
+		//get min distance
+		distances.push_back(distance(c, tl));
+		distances.push_back(distance(c, tr));
+		distances.push_back(distance(c, bl));
+		distances.push_back(distance(c, br));
+
+		min_p = (int) std::distance(distances.begin(), min_element(distances.begin(), distances.end()));
+		switch (min_p) {
+			case 0:
+				boundary.push_back(tl);
+				break;
+			case 1:
+				boundary.push_back(tr);
+				break;
+			case 2:
+				boundary.push_back(bl);
+				break;
+			case 3:
+				boundary.push_back(br);
+				break;
+			default:
+				cerr << "scaleBoundary: min_p not in range 0-3: " << min_p<< endl;
+				exit(0);
+		}
+		//clear distances vector
+		distances.clear();
+	}
+	//add unique points to scaled boundary
+	for(int i = 0; i < boundary.size() - 1; i++) {
+		if(!(boundary.at(i) == boundary.at(i + 1)))
+			scaldedBoundary.push_back(boundary[i]);
+	}
 
 }
 
 //use boundary to generate chain code
 //directions and method from page 800
+
+//TODO: change to work with scaled vector
 void ChainCode::genChainCode() {
 	Point c, n;
 	int xDiff, yDiff, code;
@@ -51,7 +107,7 @@ void ChainCode::genChainCode() {
 				code = 5;
 		}
 		chainCode.push_back(code);
-	}
+}
 }
 
 //take first difference of directions
@@ -78,6 +134,23 @@ vector<int> ChainCode::getCode() {
 
 int ChainCode::distance(Point a, Point b) {
 	return sqrt(pow((b.x - a.x),2) + pow((b.y - a.y),2));
+}
+
+//rounds n up to nearest multiple of m
+int ChainCode::roundUp(int n, int m) {
+	int r;
+	if(m == 0)
+		return n;
+
+	r = n % m;
+	if(r == 0)
+		return n;
+	return n + m - r;
+}
+
+//rounds n down to nearest multiple of m
+int ChainCode::roundDown(int n, int m) {
+	return roundUp(n-m, m);
 }
 
 ostream &operator<<(ostream &os, const ChainCode &cc) {
