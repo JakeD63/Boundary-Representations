@@ -4,9 +4,9 @@
 
 #include "ChainCode.hpp"
 
-ChainCode::ChainCode(cv::Mat img, int gridScale) : shape2D(img){
+ChainCode::ChainCode(cv::Mat img, int gridScale) : shape2D(img) {
 	scaleBoundary(gridScale);
-	for(Point i : scaldedBoundary)
+	for (Point i : scaldedBoundary)
 		cout << i.x << ", " << i.y << endl;
 	genChainCode();
 	normalizeRot();
@@ -25,7 +25,7 @@ void ChainCode::scaleBoundary(int scale) {
 	vector<Point> boundary;
 	int min_p;
 	this->gridScale = scale;
-	for(int i = 0; i < this->boundary.size(); i++) {
+	for (int i = 0; i < this->boundary.size(); i++) {
 		c = this->boundary.at(i);
 		//upper left
 		tl.x = roundDown(c.x, gridScale);
@@ -61,15 +61,15 @@ void ChainCode::scaleBoundary(int scale) {
 				boundary.push_back(br);
 				break;
 			default:
-				cerr << "scaleBoundary: min_p not in range 0-3: " << min_p<< endl;
+				cerr << "scaleBoundary: min_p not in range 0-3: " << min_p << endl;
 				exit(0);
 		}
 		//clear distances vector
 		distances.clear();
 	}
 	//add unique points to scaled boundary
-	for(int i = 0; i < boundary.size() - 1; i++) {
-		if(!(boundary.at(i) == boundary.at(i + 1)))
+	for (int i = 0; i < boundary.size() - 1; i++) {
+		if (!(boundary.at(i) == boundary.at(i + 1)))
 			scaldedBoundary.push_back(boundary[i]);
 	}
 
@@ -85,28 +85,28 @@ void ChainCode::genChainCode() {
 		n = scaldedBoundary.at(i + 1);
 		xDiff = n.x - c.x;
 		yDiff = n.y - c.y;
-		if(xDiff == gridScale) {
-			if(yDiff == gridScale)
+		if (xDiff == gridScale) {
+			if (yDiff == gridScale)
 				code = 1;
-			else if(yDiff == 0)
+			else if (yDiff == 0)
 				code = 0;
-			else if(yDiff == -gridScale)
+			else if (yDiff == -gridScale)
 				code = 7;
-		} else if(xDiff == 0) {
-			if(yDiff == gridScale)
+		} else if (xDiff == 0) {
+			if (yDiff == gridScale)
 				code = 2;
-			else if(yDiff == -gridScale)
+			else if (yDiff == -gridScale)
 				code = 6;
-		} else if(xDiff == -gridScale) {
-			if(yDiff == gridScale)
+		} else if (xDiff == -gridScale) {
+			if (yDiff == gridScale)
 				code = 3;
-			else if(yDiff == 0)
+			else if (yDiff == 0)
 				code = 4;
-			else if(yDiff == -gridScale)
+			else if (yDiff == -gridScale)
 				code = 5;
 		}
 		chainCode.push_back(code);
-}
+	}
 }
 
 //take first difference of directions
@@ -115,9 +115,9 @@ void ChainCode::genChainCode() {
 void ChainCode::normalizeRot() {
 	vector<int> tempCode;
 	int r;
-	for(int i = 0; i < this->chainCode.size() - 1; i++) {
+	for (int i = 0; i < this->chainCode.size() - 1; i++) {
 		r = this->chainCode.at(i + 1) - this->chainCode.at(i);
-		if(r < 0)
+		if (r < 0)
 			r += 8;
 		tempCode.push_back(r);
 
@@ -132,28 +132,28 @@ vector<int> ChainCode::getCode() {
 }
 
 int ChainCode::distance(Point a, Point b) {
-	return sqrt(pow((b.x - a.x),2) + pow((b.y - a.y),2));
+	return sqrt(pow((b.x - a.x), 2) + pow((b.y - a.y), 2));
 }
 
 //rounds n up to nearest multiple of m
 int ChainCode::roundUp(int n, int m) {
 	int r;
-	if(m == 0)
+	if (m == 0)
 		return n;
 
 	r = n % m;
-	if(r == 0)
+	if (r == 0)
 		return n;
 	return n + m - r;
 }
 
 //rounds n down to nearest multiple of m
 int ChainCode::roundDown(int n, int m) {
-	return roundUp(n-m, m);
+	return roundUp(n - m, m);
 }
 
 ostream &operator<<(ostream &os, const ChainCode &cc) {
-	for(auto i : cc.chainCode)
+	for (auto i : cc.chainCode)
 		os << i;
 	return os;
 }
