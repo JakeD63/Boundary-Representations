@@ -10,7 +10,7 @@ using namespace std;
 using namespace cv;
 class ChainCode : public shape2D {
     public:
-        ChainCode(cv::Mat img, int gridScale = 5);
+        ChainCode(cv::Mat img, int scale = 5);
 		vector<int> getCode();
 		friend ostream& operator<<(ostream& os, const ChainCode& cc);
     private:
@@ -20,8 +20,10 @@ class ChainCode : public shape2D {
 		int distance(Point a, Point b);
 		int roundUp(int n, int m);
 		int roundDown(int n, int m);
+		int gridScale;
         std::vector<int> chainCode;
 		std::vector<Point> scaldedBoundary;
+
 
 };
 

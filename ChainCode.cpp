@@ -8,8 +8,8 @@ ChainCode::ChainCode(cv::Mat img, int gridScale) : shape2D(img){
 	scaleBoundary(gridScale);
 	for(Point i : scaldedBoundary)
 		cout << i.x << ", " << i.y << endl;
-	//genChainCode();
-	//normalizeRot();
+	genChainCode();
+	normalizeRot();
 }
 
 //make grid larger, so we only take
@@ -19,11 +19,12 @@ ChainCode::ChainCode(cv::Mat img, int gridScale) : shape2D(img){
 
 //take distance to each corner from point
 //closest corner is added to new boundary point list
-void ChainCode::scaleBoundary(int gridScale) {
+void ChainCode::scaleBoundary(int scale) {
 	Point c, tl, tr, bl, br;
 	vector<int> distances; //tl, tr, bl, br
 	vector<Point> boundary;
 	int min_p;
+	this->gridScale = scale;
 	for(int i = 0; i < this->boundary.size(); i++) {
 		c = this->boundary.at(i);
 		//upper left
@@ -81,29 +82,29 @@ void ChainCode::scaleBoundary(int gridScale) {
 void ChainCode::genChainCode() {
 	Point c, n;
 	int xDiff, yDiff, code;
-	for (int i = 0; i < boundary.size() - 1; i++) {
-		c = boundary.at(i);
-		n = boundary.at(i + 1);
+	for (int i = 0; i < scaldedBoundary.size() - 1; i++) {
+		c = scaldedBoundary.at(i);
+		n = scaldedBoundary.at(i + 1);
 		xDiff = n.x - c.x;
 		yDiff = n.y - c.y;
-		if(xDiff == 1) {
-			if(yDiff == 1)
+		if(xDiff == gridScale) {
+			if(yDiff == gridScale)
 				code = 1;
 			else if(yDiff == 0)
 				code = 0;
-			else if(yDiff == -1)
+			else if(yDiff == -gridScale)
 				code = 7;
 		} else if(xDiff == 0) {
-			if(yDiff == 1)
+			if(yDiff == gridScale)
 				code = 2;
-			else if(yDiff == -1)
+			else if(yDiff == -gridScale)
 				code = 6;
-		} else if(xDiff == -1) {
-			if(yDiff == 1)
+		} else if(xDiff == -gridScale) {
+			if(yDiff == gridScale)
 				code = 3;
 			else if(yDiff == 0)
 				code = 4;
-			else if(yDiff == -1)
+			else if(yDiff == -gridScale)
 				code = 5;
 		}
 		chainCode.push_back(code);
