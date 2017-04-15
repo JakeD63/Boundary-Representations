@@ -17,7 +17,7 @@ public:
 	Mat to_mat();
 
 	vector<int> getCode();
-	int at(int i);
+	int at(unsigned int i);
 	int size();
 	friend ostream &operator<<(ostream &os, const ShapeNumber &s);
 	int& operator[](unsigned int i);

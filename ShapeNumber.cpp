@@ -133,7 +133,7 @@ void ShapeNumber::getMinMagnitude() {
 void ShapeNumber::normalizeRot() {
 	vector<int> tempCode;
 	int r;
-	for (int i = 0; i < this->shapeNumber.size() - 1; i++) {
+	for (unsigned int i = 0; i < this->shapeNumber.size() - 1; i++) {
 		r = this->shapeNumber.at(i + 1) - this->shapeNumber.at(i);
 		if (r < 0)
 			r += 8;
@@ -157,12 +157,12 @@ vector<int> ShapeNumber::getCode() {
 	return this->shapeNumber;
 }
 
-int ShapeNumber::at(int i) {
+int ShapeNumber::at(unsigned int i) {
 	return this->shapeNumber.at(i);
 }
 
 int ShapeNumber::size() {
-	return this->shapeNumber.size();
+	return (int) this->shapeNumber.size();
 }
 
 //convert chain code vector into integer
@@ -212,5 +212,3 @@ ostream &operator<<(ostream &os, const ShapeNumber &s) {
 int& ShapeNumber::operator[](unsigned int i) {
 	return this->shapeNumber.at(i);
 }
-
-
