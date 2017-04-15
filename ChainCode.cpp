@@ -2,7 +2,7 @@
 // Created by jake on 4/14/17.
 //
 
-#include "ChainCode.h"
+#include "ChainCode.hpp"
 
 ChainCode::ChainCode(cv::Mat img, int gridScale) : shape2D(img){
 	scaleBoundary(gridScale);
@@ -77,8 +77,6 @@ void ChainCode::scaleBoundary(int scale) {
 
 //use boundary to generate chain code
 //directions and method from page 800
-
-//TODO: change to work with scaled vector
 void ChainCode::genChainCode() {
 	Point c, n;
 	int xDiff, yDiff, code;
