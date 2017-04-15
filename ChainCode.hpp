@@ -14,6 +14,8 @@ class ChainCode : public shape2D {
 public:
 	ChainCode(cv::Mat img, int scale = 5);
 
+	Mat to_mat();
+
 	vector<int> getCode();
 
 	friend ostream &operator<<(ostream &os, const ChainCode &cc);
@@ -26,6 +28,8 @@ private:
 	void getMinMagnitude();
 
 	void normalizeRot();
+
+	int compareCodes(vector<int> a, vector<int> b);
 
 	int distance(Point a, Point b);
 

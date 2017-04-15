@@ -7,15 +7,7 @@
 ChainCode::ChainCode(cv::Mat img, int gridScale) : shape2D(img), gridScale(gridScale) {
 	scaleBoundary();
 	genChainCode();
-	//DEBUG
-	for(int i : this->chainCode)
-		cout << i;
-	cout << endl;
 	getMinMagnitude();
-	//DEBUG
-	for(int i : this->chainCode)
-		cout << i;
-	cout << endl;
 	normalizeRot();
 }
 
@@ -123,31 +115,13 @@ void ChainCode::genChainCode() {
 void ChainCode::getMinMagnitude() {
 	vector<int> min = chainCode; //set starting min
 	vector<int> curRot = chainCode;
-	string temp;
-	int min_mag, c;
-	//init min_mag
-	for(int x : curRot)
-		temp+=to_string(x);
-	min_mag = atoi(temp.c_str());
-	temp.clear();
 	for(int i = 0; i < chainCode.size(); i++) {
-		for(int j : curRot){
-			temp+=to_string(j);
-		}
-		//remove leading zeroes
-		temp.erase(0, temp.find_first_not_of('0'));
 
-		//get int value from string
-		c = atoi(temp.c_str());
-		//cout << "c: " << c <<endl;
-		if(c < min_mag) {
+		if(compareCodes(curRot, min) == -1)
 			min = curRot;
-			cout << "New Min: " << c << endl;
-		}
 
 		//rotate again
 		rotate(curRot.begin(), curRot.end()-1, curRot.end());
-		temp.clear();
 	}
 	this->chainCode = min;
 }
@@ -170,9 +144,36 @@ void ChainCode::normalizeRot() {
 
 }
 
+//! to_mat generates a normalized mat with our boundary in it.
+Mat ChainCode::to_mat() {
+	Mat output = Mat::zeros(max_y + 2, max_x + 2, CV_8UC1);
+	for ( unsigned int i = scaldedBoundary.size(); i-- > 0; )
+	{
+		output.at<uchar>(scaldedBoundary[i]) = 255;
+	}
+
+	return output;
+}
 
 vector<int> ChainCode::getCode() {
 	return this->chainCode;
+}
+
+//convert chain code vector into integer
+//for magnitude comparisons
+int ChainCode::compareCodes(vector<int> a, vector<int> b) {
+	if(a.size() != b.size()) {
+        cerr << "compareCodes: vector sizes must be equal" << endl;
+        exit(0);
+    }
+  //walk a and b until numbers are different, then return a<b
+  for(int i = 0; i < a.size(); i++) {
+    if(a[i] < b[i])
+      return -1;
+    else if(a[i] > b[i])
+      return 1;
+  }
+  return 0;
 }
 
 int ChainCode::distance(Point a, Point b) {
