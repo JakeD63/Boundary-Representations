@@ -4,8 +4,8 @@
 
 #include "ChainCode.hpp"
 
-ChainCode::ChainCode(cv::Mat img, int gridScale) : shape2D(img) {
-	scaleBoundary(gridScale);
+ChainCode::ChainCode(cv::Mat img, int gridScale) : shape2D(img), gridScale(gridScale) {
+	scaleBoundary();
 	genChainCode();
 	normalizeRot();
 }
@@ -17,12 +17,11 @@ ChainCode::ChainCode(cv::Mat img, int gridScale) : shape2D(img) {
 
 //take distance to each corner from point
 //closest corner is added to new boundary point list
-void ChainCode::scaleBoundary(int scale) {
+void ChainCode::scaleBoundary() {
 	Point c, tl, tr, bl, br;
 	vector<int> distances; //tl, tr, bl, br
 	vector<Point> boundary;
 	int min_p;
-	this->gridScale = scale;
 	for (int i = 0; i < this->boundary.size(); i++) {
 		c = this->boundary.at(i);
 		//upper left

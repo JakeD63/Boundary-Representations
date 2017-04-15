@@ -19,7 +19,7 @@ public:
 	friend ostream &operator<<(ostream &os, const ChainCode &cc);
 
 private:
-	void scaleBoundary(int gridScale);
+	void scaleBoundary();
 
 	void genChainCode();
 
