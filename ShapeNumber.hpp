@@ -19,7 +19,7 @@ public:
 	vector<int> getCode();
 	int at(int i);
 	int size();
-	friend ostream &operator<<(ostream &os, const ShapeNumber &cc);
+	friend ostream &operator<<(ostream &os, const ShapeNumber &s);
 	int& operator[](unsigned int i);
 
 private:
@@ -33,14 +33,14 @@ private:
 
 	int compareCodes(vector<int> a, vector<int> b);
 
-	int distance(Point a, Point b);
+	double distance(Point a, Point b);
 
 	int roundUp(int n, int m);
 
 	int roundDown(int n, int m);
 
 	int gridScale;
-	std::vector<int> chainCode;
+	std::vector<int> shapeNumber;
 	std::vector<Point> scaldedBoundary;
 
 

@@ -20,10 +20,10 @@ ShapeNumber::ShapeNumber(cv::Mat img, int gridScale) : shape2D(img), gridScale(g
 //closest corner is added to new boundary point list
 void ShapeNumber::scaleBoundary() {
 	Point c, tl, tr, bl, br;
-	vector<int> distances; //tl, tr, bl, br
+	vector<double> distances; //tl, tr, bl, br
 	vector<Point> boundary;
 	int min_p;
-	for (int i = 0; i < this->boundary.size(); i++) {
+	for (unsigned int i = 0; i < this->boundary.size(); i++) {
 		c = this->boundary.at(i);
 		//upper left
 		tl.x = roundDown(c.x, gridScale);
@@ -66,7 +66,7 @@ void ShapeNumber::scaleBoundary() {
 		distances.clear();
 	}
 	//add unique points to scaled boundary
-	for (int i = 0; i < boundary.size() - 1; i++) {
+	for (unsigned int i = 0; i < boundary.size() - 1; i++) {
 		if (!(boundary.at(i) == boundary.at(i + 1)))
 			scaldedBoundary.push_back(boundary[i]);
 	}
@@ -77,8 +77,8 @@ void ShapeNumber::scaleBoundary() {
 //directions and method from page 800
 void ShapeNumber::genChainCode() {
 	Point c, n;
-	int xDiff, yDiff, code;
-	for (int i = 0; i < scaldedBoundary.size() - 1; i++) {
+	int xDiff, yDiff, code = 0;
+	for (unsigned int i = 0; i < scaldedBoundary.size() - 1; i++) {
 		c = scaldedBoundary.at(i);
 		n = scaldedBoundary.at(i + 1);
 		xDiff = n.x - c.x;
@@ -103,7 +103,7 @@ void ShapeNumber::genChainCode() {
 			else if (yDiff == -gridScale)
 				code = 5;
 		}
-		chainCode.push_back(code);
+		shapeNumber.push_back(code);
 	}
 }
 
@@ -113,9 +113,9 @@ void ShapeNumber::genChainCode() {
 //a vector to an int for comparison
 //it is super gross
 void ShapeNumber::getMinMagnitude() {
-	vector<int> min = chainCode; //set starting min
-	vector<int> curRot = chainCode;
-	for(int i = 0; i < chainCode.size(); i++) {
+	vector<int> min = shapeNumber; //set starting min
+	vector<int> curRot = shapeNumber;
+	for(int i = 0; i < shapeNumber.size(); i++) {
 
 		if(compareCodes(curRot, min) == -1)
 			min = curRot;
@@ -123,7 +123,7 @@ void ShapeNumber::getMinMagnitude() {
 		//rotate again
 		rotate(curRot.begin(), curRot.end()-1, curRot.end());
 	}
-	this->chainCode = min;
+	this->shapeNumber = min;
 }
 
 
@@ -133,38 +133,36 @@ void ShapeNumber::getMinMagnitude() {
 void ShapeNumber::normalizeRot() {
 	vector<int> tempCode;
 	int r;
-	for (int i = 0; i < this->chainCode.size() - 1; i++) {
-		r = this->chainCode.at(i + 1) - this->chainCode.at(i);
+	for (int i = 0; i < this->shapeNumber.size() - 1; i++) {
+		r = this->shapeNumber.at(i + 1) - this->shapeNumber.at(i);
 		if (r < 0)
 			r += 8;
 		tempCode.push_back(r);
 
 	}
-	this->chainCode = tempCode;
+	this->shapeNumber = tempCode;
 
 }
 
 //! to_mat generates a normalized mat with our boundary in it.
 Mat ShapeNumber::to_mat() {
 	Mat output = Mat::zeros(max_y + 2, max_x + 2, CV_8UC1);
-	for ( unsigned int i = scaldedBoundary.size(); i-- > 0; )
-	{
+	for(unsigned int i = 0; i < scaldedBoundary.size(); i++) {
 		output.at<uchar>(scaldedBoundary[i]) = 255;
 	}
-
 	return output;
 }
 
 vector<int> ShapeNumber::getCode() {
-	return this->chainCode;
+	return this->shapeNumber;
 }
 
 int ShapeNumber::at(int i) {
-	return this->chainCode.at(i);
+	return this->shapeNumber.at(i);
 }
 
 int ShapeNumber::size() {
-	return this->chainCode.size();
+	return this->shapeNumber.size();
 }
 
 //convert chain code vector into integer
@@ -184,7 +182,7 @@ int ShapeNumber::compareCodes(vector<int> a, vector<int> b) {
   return 0;
 }
 
-int ShapeNumber::distance(Point a, Point b) {
+double ShapeNumber::distance(Point a, Point b) {
 	return sqrt(pow((b.x - a.x), 2) + pow((b.y - a.y), 2));
 }
 
@@ -205,14 +203,14 @@ int ShapeNumber::roundDown(int n, int m) {
 	return roundUp(n - m, m);
 }
 
-ostream &operator<<(ostream &os, const ShapeNumber &cc) {
-	for (auto i : cc.chainCode)
+ostream &operator<<(ostream &os, const ShapeNumber &s) {
+	for (auto i : s.shapeNumber)
 		os << i;
 	return os;
 }
 
 int& ShapeNumber::operator[](unsigned int i) {
-	return this->chainCode.at(i);
+	return this->shapeNumber.at(i);
 }
 
 
