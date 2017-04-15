@@ -7,6 +7,15 @@
 ChainCode::ChainCode(cv::Mat img, int gridScale) : shape2D(img), gridScale(gridScale) {
 	scaleBoundary();
 	genChainCode();
+	//DEBUG
+	for(int i : this->chainCode)
+		cout << i;
+	cout << endl;
+	getMinMagnitude();
+	//DEBUG
+	for(int i : this->chainCode)
+		cout << i;
+	cout << endl;
 	normalizeRot();
 }
 
@@ -105,6 +114,44 @@ void ChainCode::genChainCode() {
 		chainCode.push_back(code);
 	}
 }
+
+//treat vector as integer
+//get min of all rotations
+//NOTE: this uses string to convert
+//a vector to an int for comparison
+//it is super gross
+void ChainCode::getMinMagnitude() {
+	vector<int> min = chainCode; //set starting min
+	vector<int> curRot = chainCode;
+	string temp;
+	int min_mag, c;
+	//init min_mag
+	for(int x : curRot)
+		temp+=to_string(x);
+	min_mag = atoi(temp.c_str());
+	temp.clear();
+	for(int i = 0; i < chainCode.size(); i++) {
+		for(int j : curRot){
+			temp+=to_string(j);
+		}
+		//remove leading zeroes
+		temp.erase(0, temp.find_first_not_of('0'));
+
+		//get int value from string
+		c = atoi(temp.c_str());
+		//cout << "c: " << c <<endl;
+		if(c < min_mag) {
+			min = curRot;
+			cout << "New Min: " << c << endl;
+		}
+
+		//rotate again
+		rotate(curRot.begin(), curRot.end()-1, curRot.end());
+		temp.clear();
+	}
+	this->chainCode = min;
+}
+
 
 //take first difference of directions
 //in counterclockwise direction

@@ -23,6 +23,8 @@ private:
 
 	void genChainCode();
 
+	void getMinMagnitude();
+
 	void normalizeRot();
 
 	int distance(Point a, Point b);

@@ -22,11 +22,11 @@ int main(int, char** argv)
 	threshold(src, bin_img, 128, 255, 1);
 
     auto cc = ChainCode(bin_img);
-	cout << cc;
+	//cout << cc << endl;
 
 	Mat out = cc.to_mat();
 
-	imshow("BINIMG", out);
+	//imshow("BINIMG", out);
 	waitKey(0);
 
 	return 0;
