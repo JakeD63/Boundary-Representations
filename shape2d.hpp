@@ -6,6 +6,7 @@
 #include <cmath>
 #include <iterator>
 #include <algorithm>
+#include <string>
 
 class shape2D {
 	private:
