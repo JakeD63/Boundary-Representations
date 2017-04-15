@@ -5,8 +5,12 @@
 #ifndef DIP3_SHAPENUMBER_H
 #define DIP3_SHAPENUMBER_H
 
+#include "ChainCode.hpp"
 
-class ShapeNumber {
+using namespace std;
+using namespace cv;
+
+class ShapeNumber : public ChainCode {
 
 };
 
