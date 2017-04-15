@@ -159,6 +159,14 @@ vector<int> ChainCode::getCode() {
 	return this->chainCode;
 }
 
+int ChainCode::at(int i) {
+	return this->chainCode.at(i);
+}
+
+int ChainCode::size() {
+	return this->chainCode.size();
+}
+
 //convert chain code vector into integer
 //for magnitude comparisons
 int ChainCode::compareCodes(vector<int> a, vector<int> b) {
@@ -201,6 +209,10 @@ ostream &operator<<(ostream &os, const ChainCode &cc) {
 	for (auto i : cc.chainCode)
 		os << i;
 	return os;
+}
+
+int& ChainCode::operator[](unsigned int i) {
+	return this->chainCode.at(i);
 }
 
 

@@ -17,8 +17,10 @@ public:
 	Mat to_mat();
 
 	vector<int> getCode();
-
+	int at(int i);
+	int size();
 	friend ostream &operator<<(ostream &os, const ChainCode &cc);
+	int& operator[](unsigned int i);
 
 private:
 	void scaleBoundary();

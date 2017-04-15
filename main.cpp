@@ -21,8 +21,7 @@ int main(int, char** argv)
 	Mat bin_img;
 	threshold(src, bin_img, 128, 255, 1);
 
-    auto cc = ChainCode(bin_img);
-	cout << cc << endl;
+    auto cc = ChainCode(bin_img, 10);
 
 	Mat out = cc.to_mat();
 
