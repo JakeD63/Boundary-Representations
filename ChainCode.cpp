@@ -63,8 +63,7 @@ void ChainCode::normalizeRot() {
 //! to_mat generates a normalized mat with our boundary in it.
 Mat ChainCode::to_mat() {
 	Mat output = Mat::zeros(max_y + 2, max_x + 2, CV_8UC1);
-	for ( unsigned int i = boundary.size(); i-- > 0; )
-	{
+	for(unsigned int i = 0; i < boundary.size(); i++) {
 		output.at<uchar>(boundary[i]) = 255;
 	}
 
@@ -75,12 +74,12 @@ vector<int> ChainCode::getCode() {
 	return this->chainCode;
 }
 
-int ChainCode::at(int i) {
+int ChainCode::at(unsigned int i) {
 	return this->chainCode.at(i);
 }
 
 int ChainCode::size() {
-	return this->chainCode.size();
+	return (int) this->chainCode.size();
 }
 
 
