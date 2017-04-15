@@ -23,7 +23,7 @@ public:
 		shape2D(cv::Mat img);
 		~shape2D();
 
-		cv::Mat to_mat();
+		virtual cv::Mat to_mat();
 };
 
 #endif
