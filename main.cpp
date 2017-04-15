@@ -3,6 +3,7 @@
 
 #include "shape2d.hpp"
 #include "ShapeNumber.hpp"
+#include "ChainCode.hpp"
 
 using namespace std;
 using namespace cv;
@@ -21,9 +22,8 @@ int main(int, char** argv)
 	Mat bin_img;
 	threshold(src, bin_img, 128, 255, 1);
 
-    auto cc = ShapeNumber(bin_img);
-
-	Mat out = cc.to_mat();
+    auto s = ChainCode(bin_img);
+	Mat out = s.to_mat();
 
 	imshow("BINIMG", out);
 	waitKey(0);
