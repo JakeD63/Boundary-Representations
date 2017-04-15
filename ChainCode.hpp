@@ -12,7 +12,7 @@ using namespace cv;
 
 class ChainCode : public shape2D {
 public:
-	ChainCode(cv::Mat img, int scale = 5);
+	ChainCode(Mat img, int scale = 5);
 
 	Mat to_mat();
 
