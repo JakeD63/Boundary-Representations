@@ -8,25 +8,36 @@
 using namespace std;
 using namespace cv;
 
+void compare(Mat img, int scale);
 
-int main(int, char** argv)
+int main(int argc, char** argv)
 {
+	if(argc != 3) {
+		cerr << "Usage: dip3 image gridScale" << endl;
+		exit(0);
+	}
 	// Load the image
 	Mat src = imread(argv[1]);
 	
 	// Check if everything was fine
-	if (!src.data)
+	if(!src.data)
 		return -1;
 
+	compare(src, atoi(argv[2]));
+	return 0;
+}
+
+void compare(Mat src, int scale) {
+	cout << scale << endl;
 	cvtColor(src, src, CV_BGR2GRAY);
 	Mat bin_img;
 	threshold(src, bin_img, 128, 255, 1);
+	Mat orig = shape2D(bin_img).to_mat();
 
-    auto s = ChainCode(bin_img);
+	auto s = ShapeNumber(bin_img, scale);
 	Mat out = s.to_mat();
 
-	imshow("BINIMG", out);
+	imshow("Bound_Orig", orig);
+	imshow("SN_Bound", out);
 	waitKey(0);
-
-	return 0;
 }
