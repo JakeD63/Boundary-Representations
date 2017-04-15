@@ -28,7 +28,6 @@ int main(int argc, char** argv)
 }
 
 void compare(Mat src, int scale) {
-	cout << scale << endl;
 	cvtColor(src, src, CV_BGR2GRAY);
 	Mat bin_img;
 	threshold(src, bin_img, 128, 255, 1);
