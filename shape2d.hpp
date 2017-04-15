@@ -4,6 +4,8 @@
 #include <opencv2/opencv.hpp>
 #include <vector>
 #include <cmath>
+#include <iterator>
+#include <algorithm>
 
 class shape2D {
 	private:
