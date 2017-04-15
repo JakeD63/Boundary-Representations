@@ -2,7 +2,7 @@
 #include <iostream>
 
 #include "shape2d.hpp"
-#include "ChainCode.h"
+#include "ChainCode.hpp"
 
 using namespace std;
 using namespace cv;
