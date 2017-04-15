@@ -6,8 +6,6 @@
 
 ChainCode::ChainCode(cv::Mat img, int gridScale) : shape2D(img) {
 	scaleBoundary(gridScale);
-	for (Point i : scaldedBoundary)
-		cout << i.x << ", " << i.y << endl;
 	genChainCode();
 	normalizeRot();
 }
