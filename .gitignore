@@ -1,4 +1,5 @@
 # build and idea
+Makefile
 .idea
 cmake-build-debug
 build
