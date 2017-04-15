@@ -2,6 +2,8 @@
 #include <iostream>
 
 #include "shape2d.hpp"
+#include "fourier_desc.hpp"
+
 
 using namespace std;
 using namespace cv;
@@ -23,8 +25,8 @@ int main(int, char** argv)
 	auto shape = shape2D(bin_img);	
 	auto res = shape.to_mat();
 
-	imshow("BINIMG", res);
-	waitKey(0);
+	auto fd = FourierDescriptor(bin_img);
+	fd.reconstruct();
 
 	return 0;
 }
