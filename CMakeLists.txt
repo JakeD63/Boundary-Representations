@@ -7,5 +7,5 @@ add_executable( dip3
 	main.cpp 
 	shape2d.hpp
 	shape2d.cpp
-        ChainCode.cpp ChainCode.hpp)
+        ShapeNumber.cpp ShapeNumber.hpp)
 target_link_libraries( dip3 ${OpenCV_LIBS} )
