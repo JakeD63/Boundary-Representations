@@ -5,6 +5,7 @@ cmake-build-debug
 build
 *.cmake
 *.jpg
+*.png
 *.swp
 
 # Compiled Object files
