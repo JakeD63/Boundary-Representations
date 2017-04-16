@@ -3,6 +3,7 @@
 
 #include <opencv2/opencv.hpp>
 #include <vector>
+#include <iostream>
 
 class shape2D {
 	private:
@@ -19,7 +20,8 @@ class shape2D {
 		shape2D(cv::Mat img);
 		~shape2D();
 
-		cv::Mat to_mat();
+		virtual cv::Mat to_mat();
+		unsigned int getBoundSize();
 };
 
 #endif

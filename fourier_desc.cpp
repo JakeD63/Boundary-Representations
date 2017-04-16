@@ -139,4 +139,3 @@ cv::Mat FourierDescriptor::to_mat()
 
 }
 
-

@@ -5,10 +5,12 @@
 #include "ShapeNumber.hpp"
 
 ShapeNumber::ShapeNumber(cv::Mat img, int gridScale) : shape2D(img), gridScale(gridScale) {
+	cout << "start" << endl;
 	scaleBoundary();
 	genChainCode();
 	getMinMagnitude();
 	normalizeRot();
+	cout << "end" << endl;
 
 }
 
