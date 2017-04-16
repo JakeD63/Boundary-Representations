@@ -9,7 +9,6 @@
  */
 
 #include <opencv2/opencv.hpp>
-#include <string.h>
 #include <fftw3.h>
 #include <cmath>
 #include <vector>
@@ -20,11 +19,9 @@ FourierDescriptor::FourierDescriptor(cv::Mat img)
 {
 	N = boundary.size();
 
-	desc = N;
-
 	double scale = 1.0 / N;
 
-	in = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N);
+	fftw_complex* in = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N);
 	out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N);
 
 	for( int i=0; i < N; i++ )
@@ -33,10 +30,11 @@ FourierDescriptor::FourierDescriptor(cv::Mat img)
 		in[i][1] = (double) boundary[i].y * scale;
 	}
 
-	fft_plan = fftw_plan_dft_1d(N, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
+	fftw_plan fft_plan = fftw_plan_dft_1d(N, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
 	
 	fftw_execute(fft_plan);
-
+	fftw_free(in);
+	fftw_destroy_plan(fft_plan);
 
 	return;	
 }
@@ -44,8 +42,6 @@ FourierDescriptor::FourierDescriptor(cv::Mat img)
 FourierDescriptor::~FourierDescriptor()
 {
 
-	fftw_destroy_plan(fft_plan);
-	fftw_free(in);
 	fftw_free(out);
 	return;
 }
@@ -61,7 +57,7 @@ void FourierDescriptor::reconstruct()
 
 	std::vector<cv::Point> output;
 	
-	for(int i=0; i < desc; i++)
+	for(int i=0; i < N; i++)
 	{
 		int xv = (int) floor(scale * ifft[i][0] + 0.5);
 		int yv = (int) floor(scale * ifft[i][1] + 0.5);
@@ -76,8 +72,6 @@ void FourierDescriptor::reconstruct()
 		if (yv > max_y)
 			max_y = yv;
 
-		std::cout << "Number: " << i << "\t" << output[i] << std::endl;
-
 	}
 
 	boundary = output;
@@ -91,11 +85,10 @@ void FourierDescriptor::reconstruct()
 		min_y = 99999;
 		max_x = 0;
 
-		for(int i=0; i < desc; i++) 
+		for(int i=0; i < N; i++) 
 		{
 			boundary[i].x -= old_min_x;
 			boundary[i].y -= old_min_y;
-			std::cout << boundary[i] << std::endl;
 			if(boundary[i].x < min_x)
 				min_x = boundary[i].x;
 			if(boundary[i].x > max_x)
@@ -112,22 +105,14 @@ void FourierDescriptor::reconstruct()
 	fftw_free(ifft);
 }
 
-cv::Mat FourierDescriptor::to_mat()
-{
-	std::cout << "Max x: " << max_x << "Max y: " << max_y << std::endl;
-	cv::Mat out_mat = cv::Mat::zeros(max_y + 2, max_x + 2, CV_8UC1);
-	for ( unsigned int i = boundary.size(); i-- > 0; )
-	{
-
-		std::cout << "Counting Down: " << i << std::endl;
-		out_mat.at<uchar>(boundary[i]) = 255;
-	}
-	return out_mat;
-
-}
-
 void FourierDescriptor::reconstruct(unsigned int degree)
 {
+	if(degree > N)
+	{
+		std::cerr << "Cannot grow descriptor count" << std::endl;
+		return;
+	}
+
 	int elim = N - degree;
 	int start = (int) floor(degree / 2);
 	int end = start + elim;
@@ -137,49 +122,21 @@ void FourierDescriptor::reconstruct(unsigned int degree)
 		out[s][1] = 0.0;
 	}
 
+	out[0][0] = 0.0;
+	out[0][0] = 0.0;
+
 	reconstruct();
 }
 
-void FourierDescriptor::truncate(int degree)
+cv::Mat FourierDescriptor::to_mat()
 {
-	fftw_complex* ifft = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N);
-	fftw_complex* res = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * degree);	
-	
-	fftshift(out, ifft, N); 
-
-	// Remove N - degree / 2 terms from each side
-	
-	memset(out, 0, N);	
-	int center = (int) floor(N/2);
-	int start = (int) floor(center/2);
-
-	memcpy(res, ifft+(start), sizeof(fftw_complex)*degree);
-
-	ifftshift(res, out, degree);
-	
-	fftw_free(ifft);
-
-	desc = degree;
+	cv::Mat out_mat = cv::Mat::zeros(max_y + 2, max_x + 2, CV_8UC1);
+	for ( unsigned int i = boundary.size(); i-- > 0; )
+	{
+		out_mat.at<uchar>(boundary[i]) = 255;
+	}
+	return out_mat;
 
 }
 
-void FourierDescriptor::fftshift(fftw_complex *input, 
-		fftw_complex *output, int dim)
-{
-	int pivot = (dim % 2 == 0) ? (dim / 2) : ((dim - 1) / 2);
-	int rh = dim - pivot;
-	int lh = pivot;
-	memcpy(output, input+(pivot), sizeof(fftw_complex)*rh);
-	memcpy(output+rh, input, sizeof(fftw_complex)*lh);	
-}	
 
-void FourierDescriptor::ifftshift(fftw_complex *input, 
-		fftw_complex *output, int dim)
-{
-	int pivot = (dim % 2 == 0) ? (dim / 2) : ((dim + 1) / 2);
-	int rh = dim - pivot;
-	int lh = pivot;
-	memcpy(output, input+(pivot), sizeof(fftw_complex)*rh);
-	memcpy(output+rh, input, sizeof(fftw_complex)*lh);	
-
-}

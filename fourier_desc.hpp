@@ -8,10 +8,8 @@
 class FourierDescriptor : public shape2D
 {
 	private:
-		unsigned int N, desc;
-		fftw_complex *in, *out;
-		fftw_plan fft_plan;
-		fftw_complex *ifft;
+		unsigned int N;
+		fftw_complex *out;
 		void fftshift(fftw_complex *input, fftw_complex *output, int dim);
 		void ifftshift(fftw_complex *input, fftw_complex *output, int dim);
 		void truncate(int degree);
