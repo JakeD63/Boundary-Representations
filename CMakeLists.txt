@@ -13,8 +13,7 @@ add_executable( dip3
 	main.cpp 
 	shape2d.hpp
 	shape2d.cpp
-	fourier_desc.hpp
-	fourier_desc.cpp
+		ShapeNumber.cpp ShapeNumber.hpp ChainCode.cpp ChainCode.hpp)
+	  fourier_desc.hpp fourier_desc.cpp
 	)
-
-target_link_libraries( dip3 ${OpenCV_LIBS} ${FFTW_LIBRARIES} )
+  target_link_libraries( dip3 ${OpenCV_LIBS} ${FFTW_LIBRARIES} )
