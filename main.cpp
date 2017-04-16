@@ -38,8 +38,8 @@ int main(int, char** argv)
 
 	threshold(img, bin_img, 128, 255, 1);
 
-	//createDescTrackbar();
-	createShapeTrackbar();
+	createDescTrackbar();
+	//createShapeTrackbar();
 	waitKey(0);
 
 	return 0;
