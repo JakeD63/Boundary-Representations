@@ -12,13 +12,16 @@ class FourierDescriptor : public shape2D
 		fftw_complex *in, *out;
 		fftw_plan fft_plan;
 		fftw_complex *ifft;
-		
-
+		void fftshift(fftw_complex *input, fftw_complex *output, int dim);
+		void ifftshift(fftw_complex *input, fftw_complex *output, int dim);
+		void truncate(int degree);
 	public:
 		FourierDescriptor(cv::Mat img);
 		~FourierDescriptor();
 
 		void reconstruct();
+		void reconstruct(unsigned int degree);
+		
 };
 
 #endif

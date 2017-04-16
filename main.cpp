@@ -26,7 +26,8 @@ int main(int, char** argv)
 	auto res = shape.to_mat();
 
 	auto fd = FourierDescriptor(bin_img);
-	fd.reconstruct();
+	fd.reconstruct(512);
+
 
 	return 0;
 }
