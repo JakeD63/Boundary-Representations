@@ -54,7 +54,7 @@ void FourierDescriptor::reconstruct()
 {
 	fftw_plan ifft_plan;
 	fftw_complex* ifft = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N);
-	ifft_plan = fftw_plan_dft_1d(desc, out, ifft, FFTW_BACKWARD, FFTW_ESTIMATE);
+	ifft_plan = fftw_plan_dft_1d(N, out, ifft, FFTW_BACKWARD, FFTW_ESTIMATE);
 	
 	double scale = 1.0;
 	fftw_execute(ifft_plan);
@@ -128,7 +128,15 @@ cv::Mat FourierDescriptor::to_mat()
 
 void FourierDescriptor::reconstruct(unsigned int degree)
 {
-	truncate(degree);
+	int elim = N - degree;
+	int start = (int) floor(degree / 2);
+	int end = start + elim;
+	for( int s = start; s < end; s++)
+	{
+		out[s][0] = 0.0;
+		out[s][1] = 0.0;
+	}
+
 	reconstruct();
 }
 
