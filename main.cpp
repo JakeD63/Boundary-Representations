@@ -1,5 +1,13 @@
 #include <opencv2/opencv.hpp>
+<<<<<<< HEAD
 #include "ShapeNumber.hpp"
+=======
+#include <iostream>
+
+#include "shape2d.hpp"
+#include "fourier_desc.hpp"
+
+>>>>>>> b521b1ff6c9259bbe50375aeafa5c58486071115
 
 using namespace std;
 using namespace cv;
@@ -25,6 +33,7 @@ int main(int argc, char** argv)
 	return 0;
 }
 
+<<<<<<< HEAD
 void compare(Mat img1, Mat img2, int scale) {
 	Mat bin_img1, bin_img2;
 
@@ -40,4 +49,15 @@ void compare(Mat img1, Mat img2, int scale) {
 	imshow("Image2", out2);
 
 	waitKey(0);
+=======
+	auto fd = FourierDescriptor(bin_img);
+	fd.reconstruct(256);
+	auto m = fd.to_mat();
+
+	imshow("Result:", m);
+	waitKey(0);
+
+
+	return 0;
+>>>>>>> b521b1ff6c9259bbe50375aeafa5c58486071115
 }
