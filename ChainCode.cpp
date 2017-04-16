@@ -70,6 +70,8 @@ Mat ChainCode::to_mat() {
 	return output;
 }
 
+//return a Mat image with points connected with
+//white line
 Mat ChainCode::to_connected_mat() {
 	//use cvLine to draw lines between all points
 	Mat img = this->to_mat();

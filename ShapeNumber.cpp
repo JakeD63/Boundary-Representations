@@ -154,6 +154,8 @@ Mat ShapeNumber::to_mat() {
 	return output;
 }
 
+//return a Mat image with points connected with
+//white line
 Mat ShapeNumber::to_connected_mat() {
 	//use cvLine to draw lines between all points
 	Mat img = this->to_mat();
@@ -163,14 +165,17 @@ Mat ShapeNumber::to_connected_mat() {
 	return img;
 }
 
+//get shape number
 vector<int> ShapeNumber::getCode() {
 	return this->shapeNumber;
 }
 
+//get specific number from shape number
 int ShapeNumber::at(unsigned int i) {
 	return this->shapeNumber.at(i);
 }
 
+//get number of digits in shape number
 int ShapeNumber::size() {
 	return (int) this->shapeNumber.size();
 }
@@ -192,6 +197,7 @@ int ShapeNumber::compareCodes(vector<int> a, vector<int> b) {
   return 0;
 }
 
+//get distance between two 2D points
 double ShapeNumber::distance(Point a, Point b) {
 	return sqrt(pow((b.x - a.x), 2) + pow((b.y - a.y), 2));
 }
@@ -213,12 +219,14 @@ int ShapeNumber::roundDown(int n, int m) {
 	return roundUp(n - m, m);
 }
 
+//print operator for shape number
 ostream &operator<<(ostream &os, const ShapeNumber &s) {
 	for (auto i : s.shapeNumber)
 		os << i;
 	return os;
 }
 
+//access operator for shape number
 int& ShapeNumber::operator[](unsigned int i) {
 	return this->shapeNumber.at(i);
 }
