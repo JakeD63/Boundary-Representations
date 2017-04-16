@@ -21,6 +21,7 @@ int main(int argc, char** argv)
 		return -1;
 
 	compare(img1, img2, atoi(argv[3]));
+
 	return 0;
 }
 

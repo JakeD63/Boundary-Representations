@@ -70,6 +70,15 @@ Mat ChainCode::to_mat() {
 	return output;
 }
 
+Mat ChainCode::to_connected_mat() {
+	//use cvLine to draw lines between all points
+	Mat img = this->to_mat();
+	for(int i = 0; i < boundary.size() - 1; i++) {
+		line(img, boundary.at(i), boundary.at(i+1), Scalar(255,255,255),1,CV_AA );
+	}
+	return img;
+}
+
 vector<int> ChainCode::getCode() {
 	return this->chainCode;
 }
