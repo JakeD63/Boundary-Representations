@@ -32,8 +32,8 @@ void compare(Mat img1, Mat img2, int scale) {
 	threshold(img1, bin_img1, 128, 255, 1);
 	threshold(img2, bin_img2, 128, 255, 1);
 
-	Mat out1 = ShapeNumber(bin_img1).to_mat();
-	Mat out2= ShapeNumber(bin_img2, scale).to_mat();
+	Mat out1 = ShapeNumber(bin_img1, scale).to_connected_mat();
+	Mat out2 = ShapeNumber(bin_img2, scale).to_connected_mat();
 
 	imshow("Image1", out1);
 	imshow("Image2", out2);
