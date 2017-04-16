@@ -68,7 +68,7 @@ void ShapeNumber::scaleBoundary() {
 	//add unique points to scaled boundary
 	for (unsigned int i = 0; i < boundary.size() - 1; i++) {
 		if (!(boundary.at(i) == boundary.at(i + 1)))
-			scaldedBoundary.push_back(boundary[i]);
+			scaledBoundary.push_back(boundary[i]);
 	}
 
 }
@@ -78,9 +78,9 @@ void ShapeNumber::scaleBoundary() {
 void ShapeNumber::genChainCode() {
 	Point c, n;
 	int xDiff, yDiff, code = 0;
-	for (unsigned int i = 0; i < scaldedBoundary.size() - 1; i++) {
-		c = scaldedBoundary.at(i);
-		n = scaldedBoundary.at(i + 1);
+	for (unsigned int i = 0; i < scaledBoundary.size() - 1; i++) {
+		c = scaledBoundary.at(i);
+		n = scaledBoundary.at(i + 1);
 		xDiff = n.x - c.x;
 		yDiff = n.y - c.y;
 		if (xDiff == gridScale) {
@@ -147,10 +147,19 @@ void ShapeNumber::normalizeRot() {
 //! to_mat generates a normalized mat with our boundary in it.
 Mat ShapeNumber::to_mat() {
 	Mat output = Mat::zeros(max_y + 2, max_x + 2, CV_8UC1);
-	for(unsigned int i = 0; i < scaldedBoundary.size(); i++) {
-		output.at<uchar>(scaldedBoundary[i]) = 255;
+	for(unsigned int i = 0; i < scaledBoundary.size(); i++) {
+		output.at<uchar>(scaledBoundary[i]) = 255;
 	}
 	return output;
+}
+
+Mat ShapeNumber::to_connected_mat() {
+	//use cvLine to draw lines between all points
+	Mat img = this->to_mat();
+	for(int i = 0; i < scaledBoundary.size() - 1; i++) {
+		line(img, scaledBoundary.at(i), scaledBoundary.at(i+1), Scalar(255,255,255),1,CV_AA );
+	}
+	return img;
 }
 
 vector<int> ShapeNumber::getCode() {

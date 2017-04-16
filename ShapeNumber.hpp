@@ -15,6 +15,7 @@ public:
 	ShapeNumber(Mat img, int scale = 5);
 
 	Mat to_mat();
+	Mat to_connected_mat();
 
 	vector<int> getCode();
 	int at(unsigned int i);
@@ -41,7 +42,7 @@ private:
 
 	int gridScale;
 	std::vector<int> shapeNumber;
-	std::vector<Point> scaldedBoundary;
+	std::vector<Point> scaledBoundary;
 
 
 };
