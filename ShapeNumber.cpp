@@ -9,6 +9,7 @@ ShapeNumber::ShapeNumber(cv::Mat img, int gridScale) : shape2D(img), gridScale(g
 	genChainCode();
 	getMinMagnitude();
 	normalizeRot();
+
 }
 
 //make grid larger, so we only take

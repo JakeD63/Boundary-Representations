@@ -37,5 +37,6 @@ void compare(Mat img1, Mat img2, int scale) {
 
 	imshow("Image1", out1);
 	imshow("Image2", out2);
+
 	waitKey(0);
 }
