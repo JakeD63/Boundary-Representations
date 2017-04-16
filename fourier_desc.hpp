@@ -8,7 +8,7 @@
 class FourierDescriptor : public shape2D
 {
 	private:
-		unsigned int N;
+		unsigned int N, desc;
 		fftw_complex *in, *out;
 		fftw_plan fft_plan;
 		fftw_complex *ifft;
@@ -21,6 +21,7 @@ class FourierDescriptor : public shape2D
 
 		void reconstruct();
 		void reconstruct(unsigned int degree);
+		cv::Mat to_mat();
 		
 };
 
