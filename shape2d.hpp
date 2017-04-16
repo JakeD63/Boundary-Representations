@@ -13,11 +13,10 @@ class shape2D {
 		cv::Point find_tm_lm(cv::Mat img);
 		void rotate_cw(const cv::Point p, cv::Point& c_n);
 		void find_next(cv::Point& p, cv::Point& c_n);
-
+	
 	protected:
 		std::vector<cv::Point> boundary;
-		unsigned int max_x, max_y, min_x, min_y;
-
+		int max_x, max_y, min_x, min_y;
 
 public:
 		shape2D(cv::Mat img);

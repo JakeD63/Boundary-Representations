@@ -1,5 +1,9 @@
 #include <opencv2/opencv.hpp>
-#include "ShapeNumber.hpp"
+
+#include <iostream>
+
+#include "shape2d.hpp"
+#include "fourier_desc.hpp"
 
 using namespace std;
 using namespace cv;
@@ -25,19 +29,13 @@ int main(int argc, char** argv)
 	return 0;
 }
 
-void compare(Mat img1, Mat img2, int scale) {
-	Mat bin_img1, bin_img2;
+	auto fd = FourierDescriptor(bin_img);
+	fd.reconstruct(256);
+	auto m = fd.to_mat();
 
-	cvtColor(img1, img1, CV_BGR2GRAY);
-	cvtColor(img2, img2, CV_BGR2GRAY);
-	threshold(img1, bin_img1, 128, 255, 1);
-	threshold(img2, bin_img2, 128, 255, 1);
-
-	Mat out1 = ShapeNumber(bin_img1, scale).to_connected_mat();
-	Mat out2 = ShapeNumber(bin_img2, scale).to_connected_mat();
-
-	imshow("Image1", out1);
-	imshow("Image2", out2);
-
+	imshow("Result:", m);
 	waitKey(0);
+
+
+	return 0;
 }
