@@ -13,7 +13,7 @@ add_executable( dip3
 	main.cpp 
 	shape2d.hpp
 	shape2d.cpp
-		ShapeNumber.cpp ShapeNumber.hpp ChainCode.cpp ChainCode.hpp)
+		ShapeNumber.cpp ShapeNumber.hpp ChainCode.cpp ChainCode.hpp
 		fourier_desc.hpp
 		fourier_desc.cpp
 	)
