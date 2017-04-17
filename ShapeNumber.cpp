@@ -4,20 +4,20 @@
 
 #include "ShapeNumber.hpp"
 
-ShapeNumber::ShapeNumber(cv::Mat img, int gridScale) : shape2D(img) {
-	this->gridScale = getGridScale(gridScale);
+ShapeNumber::ShapeNumber(cv::Mat img, int scale) : shape2D(img) {
+	setGridScale(scale);
 	scaleBoundary();
 	genChainCode();
 	getMinMagnitude();
 	normalizeRot();
 }
 
-int ShapeNumber::getGridScale(int gridScale) {
-
-	if(gridScale > boundary.size() % min(this->imgSize.width, this->imgSize.height)) {
-		return (boundary.size() % min(this->imgSize.width, this->imgSize.height)) - 1;
-	}
-	return gridScale;
+void ShapeNumber::setGridScale(int scale) {
+	int max = this->getMaxGridScale();
+	if(gridScale > max)
+		this->gridScale = max;
+	else
+		this->gridScale = scale;
 }
 
 //make grid larger, so we only take
@@ -158,7 +158,7 @@ void ShapeNumber::rescaleBoundary(int scale) {
 	this->scaledBoundary.clear();
 	this->shapeNumber.clear();
 
-	this->gridScale = getGridScale(scale);
+	setGridScale(scale);
 	scaleBoundary();
 	genChainCode();
 	getMinMagnitude();
@@ -183,6 +183,11 @@ Mat ShapeNumber::to_connected_mat() {
 		line(img, scaledBoundary.at(i), scaledBoundary.at(i+1), Scalar(255,255,255),1,CV_AA );
 	}
 	return img;
+}
+
+//get the maximum grid resize allowed by boundary
+int ShapeNumber::getMaxGridScale() {
+	return (int) ((boundary.size() % min(this->imgSize.width, this->imgSize.height)) - 1);
 }
 
 //get shape number

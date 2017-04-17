@@ -16,7 +16,7 @@ public:
 	void rescaleBoundary(int scale);
 	Mat to_mat();
 	Mat to_connected_mat();
-
+	int getMaxGridScale();
 	vector<int> getCode();
 	int at(unsigned int i);
 	int size();
@@ -24,7 +24,7 @@ public:
 	int& operator[](unsigned int i);
 
 private:
-	int getGridScale(int gridScale);
+	void setGridScale(int scale);
 	void scaleBoundary();
 
 	void genChainCode();
