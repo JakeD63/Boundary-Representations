@@ -40,7 +40,7 @@ int main(int, char** argv)
 	shape2D sample = shape2D(bin_img);
 	Size wSize = sample.to_mat().size();
 
-	createDescTrackbar(wSize, sample.getBoundSize());
+	//createDescTrackbar(wSize, sample.getBoundSize());
 	createShapeTrackbar(wSize, wSize.width);
 	waitKey(0);
 
@@ -69,6 +69,7 @@ void showDesc(int, void*) {
 	fd.reconstruct(desc_track_pos);
 	auto m = fd.to_mat();
 	imshow(descriptorName, m);
+	m.release();
 }
 
 void showShape(int, void*) {
@@ -76,5 +77,9 @@ void showShape(int, void*) {
 	auto shapeL = ShapeNumber(bin_img, shape_track_pos).to_mat();
 	auto shapeR = ShapeNumber(bin_img, shape_track_pos).to_connected_mat();
 	hconcat(shapeL, shapeR, shapeLR);
+	cout << "grid size" << shape_track_pos << endl;
 	imshow(shapeNumberName, shapeLR);
+	shapeL.release();
+	shapeR.release();
+	shapeLR.release();
 }
