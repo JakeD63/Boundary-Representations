@@ -10,9 +10,9 @@ using namespace std;
 using namespace cv;
 
 void createDescTrackbar(Size wSize, int max_desc);
-void createShapeTrackbar(Size wSize, int max_grid);
+void createShapeTrackbar(Size wSize, ShapeNumber s, int max_grid);
 void showDesc(int, void*);
-void showShape(int, void*);
+void showShape(int, void* userdata);
 
 //Globals
 Mat bin_img;
@@ -21,8 +21,8 @@ string descriptorName = "desc";
 string shapeNumberName = "shape";
 
 //quick and dirty gui w/trackbar
-//showShape sometimes crashes (depends on computer?), will debug
-//not related to our classes, crashes before showShape func call
+//crashes sometimes (probably memory allocation related)
+//have fixed it partially by resuing shapenumber objects
 //looks like its happening in Mat deallocation
 int main(int, char** argv)
 {
@@ -38,11 +38,12 @@ int main(int, char** argv)
 	threshold(img, bin_img, 128, 255, 1);
 
 	shape2D sample = shape2D(bin_img);
+	ShapeNumber s = ShapeNumber(bin_img);
 	Size wSize = sample.to_mat().size();
 
 	//createDescTrackbar(wSize, sample.getBoundSize());
-	createShapeTrackbar(wSize, wSize.width);
-	waitKey(0);
+	createShapeTrackbar(wSize, s, wSize.width);
+
 
 	return 0;
 }
@@ -54,14 +55,19 @@ void createDescTrackbar(Size wSize, int max_desc) {
 	resizeWindow(descriptorName, wSize.width, wSize.height);
 	createTrackbar("Descriptor Count", descriptorName, &desc_track_pos, max_desc, showDesc);
 	showDesc(desc_track_pos, 0);
+	waitKey(0);
 }
 
-void createShapeTrackbar(Size wSize, int max_grid) {
+//shapenumber must be passed in, or waitkey() used after showshape,
+//to avoid destructor call in shape2D, which will cause crashing
+//in the trackbar callback
+void createShapeTrackbar(Size wSize, ShapeNumber s, int max_grid) {
 	shape_track_pos = 1;
 	namedWindow(shapeNumberName);
 	resizeWindow(shapeNumberName, 2*wSize.width, wSize.height);
-	createTrackbar("Shape Grid Scale", shapeNumberName, &shape_track_pos, max_grid, showShape);
-	showShape(desc_track_pos, 0);
+	createTrackbar("Shape Grid Scale", shapeNumberName, &shape_track_pos, max_grid, showShape, &s);
+	showShape(shape_track_pos, &s);
+	waitKey(0);
 }
 
 void showDesc(int, void*) {
@@ -72,12 +78,15 @@ void showDesc(int, void*) {
 	m.release();
 }
 
-void showShape(int, void*) {
+void showShape(int, void* userdata) {
+	ShapeNumber* s = (ShapeNumber*)userdata;
 	Mat shapeLR;
-	auto shapeL = ShapeNumber(bin_img, shape_track_pos).to_mat();
-	auto shapeR = ShapeNumber(bin_img, shape_track_pos).to_connected_mat();
+
+	s->rescaleBoundary(shape_track_pos);
+
+	auto shapeL = s->to_mat();
+	auto shapeR = s->to_connected_mat();
 	hconcat(shapeL, shapeR, shapeLR);
-	cout << "grid size" << shape_track_pos << endl;
 	imshow(shapeNumberName, shapeLR);
 	shapeL.release();
 	shapeR.release();

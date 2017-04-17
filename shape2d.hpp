@@ -15,6 +15,7 @@ class shape2D {
 	protected:
 		std::vector<cv::Point> boundary;
 		int max_x, max_y, min_x, min_y;
+		cv::Size imgSize;
 
 	public:
 		shape2D(cv::Mat img);

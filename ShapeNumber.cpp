@@ -4,11 +4,20 @@
 
 #include "ShapeNumber.hpp"
 
-ShapeNumber::ShapeNumber(cv::Mat img, int gridScale) : shape2D(img), gridScale(gridScale) {
+ShapeNumber::ShapeNumber(cv::Mat img, int gridScale) : shape2D(img) {
+	this->gridScale = getGridScale(gridScale);
 	scaleBoundary();
 	genChainCode();
 	getMinMagnitude();
 	normalizeRot();
+}
+
+int ShapeNumber::getGridScale(int gridScale) {
+
+	if(gridScale > boundary.size() % min(this->imgSize.width, this->imgSize.height)) {
+		return (boundary.size() % min(this->imgSize.width, this->imgSize.height)) - 1;
+	}
+	return gridScale;
 }
 
 //make grid larger, so we only take
@@ -21,7 +30,7 @@ ShapeNumber::ShapeNumber(cv::Mat img, int gridScale) : shape2D(img), gridScale(g
 void ShapeNumber::scaleBoundary() {
 	Point c, tl, tr, bl, br;
 	vector<double> distances; //tl, tr, bl, br
-	vector<Point> boundary;
+	vector<Point> temp_bound;
 	int min_p;
 	for (unsigned int i = 0; i < this->boundary.size(); i++) {
 		c = this->boundary.at(i);
@@ -45,18 +54,19 @@ void ShapeNumber::scaleBoundary() {
 		distances.push_back(distance(c, br));
 
 		min_p = (int) std::distance(distances.begin(), min_element(distances.begin(), distances.end()));
+
 		switch (min_p) {
 			case 0:
-				boundary.push_back(tl);
+				temp_bound.push_back(tl);
 				break;
 			case 1:
-				boundary.push_back(tr);
+				temp_bound.push_back(tr);
 				break;
 			case 2:
-				boundary.push_back(bl);
+				temp_bound.push_back(bl);
 				break;
 			case 3:
-				boundary.push_back(br);
+				temp_bound.push_back(br);
 				break;
 			default:
 				cerr << "scaleBoundary: min_p not in range 0-3: " << min_p << endl;
@@ -66,9 +76,9 @@ void ShapeNumber::scaleBoundary() {
 		distances.clear();
 	}
 	//add unique points to scaled boundary
-	for (unsigned int i = 0; i < boundary.size() - 1; i++) {
-		if (!(boundary.at(i) == boundary.at(i + 1)))
-			scaledBoundary.push_back(boundary[i]);
+	for (unsigned int i = 0; i < temp_bound.size() - 1; i++) {
+		if (!(temp_bound.at(i) == temp_bound.at(i + 1)))
+			scaledBoundary.push_back(temp_bound[i]);
 	}
 
 }
@@ -142,6 +152,17 @@ void ShapeNumber::normalizeRot() {
 	}
 	this->shapeNumber = tempCode;
 
+}
+
+void ShapeNumber::rescaleBoundary(int scale) {
+	this->scaledBoundary.clear();
+	this->shapeNumber.clear();
+
+	this->gridScale = getGridScale(scale);
+	scaleBoundary();
+	genChainCode();
+	getMinMagnitude();
+	normalizeRot();
 }
 
 //! to_mat generates a normalized mat with our boundary in it.
