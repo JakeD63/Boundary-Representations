@@ -87,7 +87,6 @@ Point shape2D::find_tm_lm(Mat img)
 //! @param img Expects Mat containing binary thresholded image
 shape2D::shape2D(Mat img)
 {
-	std::cout << "shape2D constructor" << std::endl;
 	// we only accept 8 bit single channel images
 	CV_Assert( img.depth() == CV_8U );
 
