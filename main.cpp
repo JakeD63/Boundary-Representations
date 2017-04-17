@@ -38,7 +38,7 @@ int main(int, char** argv)
 
 	threshold(img, bin_img, 128, 255, 1);
 
-	//createDescTrackbar();
+	createDescTrackbar();
 	createShapeTrackbar();
 	waitKey(0);
 
@@ -46,19 +46,23 @@ int main(int, char** argv)
 }
 
 void createDescTrackbar() {
-	desc_track_max = shape2D(bin_img).getBoundSize();
+	shape2D sample = shape2D(bin_img);
+	Size wSize = sample.to_mat().size();
+	desc_track_max = sample.getBoundSize();
 	desc_track_pos = desc_track_max / 2;
 	namedWindow(descriptorName);
-	resizeWindow(descriptorName, 800, 600);
+	resizeWindow(descriptorName, wSize.width, wSize.height);
 	createTrackbar("Descriptor Count", descriptorName, &desc_track_pos, desc_track_max, showDesc);
 	showDesc(desc_track_pos, 0);
 }
 
 void createShapeTrackbar() {
+	shape2D sample = shape2D(bin_img);
+	Size wSize = sample.to_mat().size();
 	shape_track_max = 80;
 	shape_track_pos = 5;
 	namedWindow(shapeNumberName);
-	resizeWindow(shapeNumberName, 800, 600);
+	resizeWindow(shapeNumberName, 2*wSize.width, wSize.height);
 	createTrackbar("Shape Grid Scale", shapeNumberName, &shape_track_pos, shape_track_max, showShape);
 	showShape(desc_track_pos, 0);
 }
