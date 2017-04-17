@@ -42,6 +42,7 @@ private:
 	int roundDown(int n, int m);
 
 	int gridScale;
+	const int GRID_MAX = 100;
 	std::vector<int> shapeNumber;
 	std::vector<Point> scaledBoundary;
 

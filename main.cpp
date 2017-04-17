@@ -41,8 +41,9 @@ int main(int, char** argv)
 	ShapeNumber s = ShapeNumber(bin_img);
 	Size wSize = sample.to_mat().size();
 
+
 	//createDescTrackbar(wSize, sample.getBoundSize());
-	createShapeTrackbar(wSize, s, wSize.width);
+	createShapeTrackbar(wSize, s, s.getMaxGridScale());
 
 
 	return 0;
@@ -83,12 +84,12 @@ void showShape(int, void* userdata) {
 	Mat shapeLR;
 
 	s->rescaleBoundary(shape_track_pos);
-
 	auto shapeL = s->to_mat();
 	auto shapeR = s->to_connected_mat();
 	hconcat(shapeL, shapeR, shapeLR);
-	imshow(shapeNumberName, shapeLR);
 	shapeL.release();
 	shapeR.release();
+	imshow(shapeNumberName, shapeLR);
+
 	shapeLR.release();
 }

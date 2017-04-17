@@ -20,6 +20,11 @@ void ShapeNumber::setGridScale(int scale) {
 		this->gridScale = scale;
 }
 
+//get the maximum grid resize allowed by boundary
+int ShapeNumber::getMaxGridScale() {
+	return this->GRID_MAX;
+}
+
 //make grid larger, so we only take
 //a sampling of points along the boundary
 //this allows similar shapes to have much
@@ -185,10 +190,7 @@ Mat ShapeNumber::to_connected_mat() {
 	return img;
 }
 
-//get the maximum grid resize allowed by boundary
-int ShapeNumber::getMaxGridScale() {
-	return (int) ((boundary.size() % min(this->imgSize.width, this->imgSize.height)) - 1);
-}
+
 
 //get shape number
 vector<int> ShapeNumber::getCode() {
