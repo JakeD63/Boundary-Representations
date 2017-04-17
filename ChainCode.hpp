@@ -15,7 +15,6 @@ public:
 
 	Mat to_mat();
 	Mat to_connected_mat();
-
 	vector<int> getCode();
 	int at(unsigned int i);
 	int size();

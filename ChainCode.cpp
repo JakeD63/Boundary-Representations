@@ -81,6 +81,7 @@ Mat ChainCode::to_connected_mat() {
 	return img;
 }
 
+
 vector<int> ChainCode::getCode() {
 	return this->chainCode;
 }
