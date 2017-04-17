@@ -65,7 +65,7 @@ void createDescTrackbar(Size wSize, int max_desc) {
 void createShapeTrackbar(Size wSize, ShapeNumber s, int max_grid) {
 	shape_track_pos = 1;
 	namedWindow(shapeNumberName);
-	resizeWindow(shapeNumberName, 2*wSize.width, wSize.height);
+	resizeWindow(shapeNumberName, wSize.width, wSize.height);
 	createTrackbar("Shape Grid Scale", shapeNumberName, &shape_track_pos, max_grid, showShape, &s);
 	showShape(shape_track_pos, &s);
 	waitKey(0);
@@ -84,12 +84,10 @@ void showShape(int, void* userdata) {
 	Mat shapeLR;
 
 	s->rescaleBoundary(shape_track_pos);
-	auto shapeL = s->to_mat();
-	auto shapeR = s->to_connected_mat();
-	hconcat(shapeL, shapeR, shapeLR);
-	shapeL.release();
-	shapeR.release();
-	imshow(shapeNumberName, shapeLR);
+	auto shape = s->to_mat();
 
-	shapeLR.release();
+	imshow(shapeNumberName, shape);
+	shape.release();
+
+	//shapeLR.release();
 }
