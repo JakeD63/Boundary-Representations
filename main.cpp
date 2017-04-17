@@ -38,8 +38,8 @@ int main(int, char** argv)
 
 	threshold(img, bin_img, 128, 255, 1);
 
-	createDescTrackbar();
-	//createShapeTrackbar();
+	//createDescTrackbar();
+	createShapeTrackbar();
 	waitKey(0);
 
 	return 0;
@@ -72,7 +72,11 @@ void showDesc(int, void*) {
 
 void showShape(int, void*) {
 	cout << "showshape call" << endl; //crashes before here
-	auto shape = ShapeNumber(bin_img, shape_track_pos).to_mat();
-	imshow(shapeNumberName, shape);
+	Mat shapeLR;
+	auto shapeL = ShapeNumber(bin_img, shape_track_pos).to_mat();
+	auto shapeR = ShapeNumber(bin_img, shape_track_pos).to_connected_mat();
+	hconcat(shapeL, shapeR, shapeLR);
+	imshow(shapeNumberName, shapeLR);
+
 	cout << "image displayed" << endl;
 }
