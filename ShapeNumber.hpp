@@ -41,6 +41,7 @@ private:
 
 	int roundDown(int n, int m);
 
+	Mat img, connectedImg;
 	int gridScale;
 	const int GRID_MAX = 100;
 	std::vector<int> shapeNumber;
