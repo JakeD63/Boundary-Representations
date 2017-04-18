@@ -172,10 +172,7 @@ void ShapeNumber::rescaleBoundary(int scale) {
 
 //! to_mat generates a normalized mat with our boundary in it.
 Mat ShapeNumber::to_mat() {
-	this->img = Mat::zeros(max_y + 2, max_x + 2, CV_8UC1);
-	for(unsigned int i = 0; i < scaledBoundary.size(); i++) {
-		this->img.at<uchar>(scaledBoundary[i]) = 255;
-	}
+	this->img = redrawPoints(this->img);
 	return this->img;
 }
 
@@ -183,13 +180,20 @@ Mat ShapeNumber::to_mat() {
 //white line
 Mat ShapeNumber::to_connected_mat() {
 	//use cvLine to draw lines between all points
-	this->connectedImg = this->to_mat();
+	this->connectedImg = this->redrawPoints(this->connectedImg);
 	for(int i = 0; i < scaledBoundary.size() - 1; i++) {
 		line(this->connectedImg, scaledBoundary.at(i), scaledBoundary.at(i+1), Scalar(255,255,255),1,CV_AA );
 	}
 	return this->connectedImg;
 }
 
+Mat ShapeNumber::redrawPoints(Mat img) {
+	img = Mat::zeros(max_y + 2, max_x + 2, CV_8UC1);
+	for(unsigned int i = 0; i < scaledBoundary.size(); i++) {
+		img.at<uchar>(scaledBoundary[i]) = 255;
+	}
+	return img;
+}
 
 
 //get shape number

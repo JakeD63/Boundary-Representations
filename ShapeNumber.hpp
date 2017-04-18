@@ -37,6 +37,7 @@ private:
 
 	double distance(Point a, Point b);
 
+	Mat redrawPoints(Mat img);
 	int roundUp(int n, int m);
 
 	int roundDown(int n, int m);
