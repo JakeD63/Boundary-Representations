@@ -13,6 +13,7 @@ class FourierDescriptor : public shape2D
 		void fftshift(fftw_complex *input, fftw_complex *output, int dim);
 		void ifftshift(fftw_complex *input, fftw_complex *output, int dim);
 		void truncate(int degree);
+		cv::Mat img;
 	public:
 		FourierDescriptor(cv::Mat img);
 		~FourierDescriptor();

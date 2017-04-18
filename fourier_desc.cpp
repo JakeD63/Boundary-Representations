@@ -130,12 +130,12 @@ void FourierDescriptor::reconstruct(unsigned int degree)
 
 cv::Mat FourierDescriptor::to_mat()
 {
-	cv::Mat out_mat = cv::Mat::zeros(max_y + 2, max_x + 2, CV_8UC1);
+	this->img = cv::Mat::zeros(max_y + 2, max_x + 2, CV_8UC1);
 	for ( unsigned int i = boundary.size(); i-- > 0; )
 	{
-		out_mat.at<uchar>(boundary[i]) = 255;
+		this->img.at<uchar>(boundary[i]) = 255;
 	}
-	return out_mat;
+	return this->img;
 
 }
 
