@@ -80,14 +80,11 @@ void showDesc(int, void*) {
 }
 
 void showShape(int, void* userdata) {
-	ShapeNumber* s = (ShapeNumber*)userdata;
-	Mat shapeLR;
-
+	ShapeNumber *s = (ShapeNumber *) userdata;
 	s->rescaleBoundary(shape_track_pos);
-	auto shape = s->to_mat();
-
-	imshow(shapeNumberName, shape);
-	shape.release();
-
-	//shapeLR.release();
+	static Mat shapeL, shapeR, shapeLR;
+	shapeL = s->to_mat();
+	shapeR = s->to_connected_mat();
+	shapeL.push_back(shapeR);
+	imshow(shapeNumberName, shapeL);
 }
