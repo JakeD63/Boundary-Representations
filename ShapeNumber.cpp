@@ -187,6 +187,10 @@ Mat ShapeNumber::to_connected_mat() {
 	return this->connectedImg;
 }
 
+//NOTE: img = Mat::zeroes does not create a new
+//image and assign it, the = operator is overloaded
+//in opencv for images of the same type, it will redraw over
+//img memory
 Mat ShapeNumber::redrawPoints(Mat img) {
 	img = Mat::zeros(max_y + 2, max_x + 2, CV_8UC1);
 	for(unsigned int i = 0; i < scaledBoundary.size(); i++) {
