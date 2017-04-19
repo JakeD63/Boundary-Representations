@@ -85,6 +85,6 @@ void showShape(int, void* data) {
 	s->rescaleBoundary(shape_track_pos);
 	shapeL = s->to_mat();
 	shapeR = s->to_connected_mat();
-	shapeL.push_back(shapeR);
-	imshow(shapeNumberName, shapeL);
+	hconcat(shapeL, shapeR, shapeLR);
+	imshow(shapeNumberName, shapeLR);
 }
