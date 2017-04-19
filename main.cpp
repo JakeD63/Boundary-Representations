@@ -19,6 +19,7 @@ Mat bin_img;
 string descriptorName = "desc";
 string shapeNumberName = "shape";
 int desc_track_pos, shape_track_pos;
+int max_desc, max_grid;
 
 
 //quick and dirty gui w/trackbar
@@ -27,8 +28,6 @@ int desc_track_pos, shape_track_pos;
 //looks like its happening in Mat deallocation
 int main(int, char** argv)
 {
-
-	int max_desc, max_grid;
 	// Load the image
 	Mat img = imread(argv[1]);
 	
@@ -47,13 +46,13 @@ int main(int, char** argv)
 	max_desc = fd.getBoundSize();
 	max_grid = s.getMaxGridScale();
 
-	desc_track_pos = max_desc / 2;
+	desc_track_pos = 50;
 	shape_track_pos = 1;
 
 	//set up descriptor window
 	namedWindow(descriptorName);
 	resizeWindow(descriptorName, wSize.width, wSize.height);
-	createTrackbar("Descriptor Count", descriptorName, &desc_track_pos, max_desc, showDesc, &fd);
+	createTrackbar("Descriptor Count", descriptorName, &desc_track_pos, 100, showDesc, &fd);
 
 	//set up shape number window
 	namedWindow(shapeNumberName);
@@ -70,11 +69,13 @@ int main(int, char** argv)
 	return 0;
 }
 
-
+//I tried making the trackbar range between 0 and 100
+//and use position as a percentage of max, but it still weighted
+//heavily to lower trackbar numbers. I committed the code, feel free to check it out
 void showDesc(int, void* data) {
 	Mat m;
 	FourierDescriptor fd(bin_img);
-	fd.reconstruct(desc_track_pos);
+	fd.reconstruct(((desc_track_pos / 100.0) * max_desc));
 	m = fd.to_mat();
 	imshow(descriptorName, m);
 }
