@@ -4,6 +4,8 @@
 #include "shape2d.hpp"
 #include "fourier_desc.hpp"
 #include "ShapeNumber.hpp"
+#include <ostream>
+#include <iterator>
 #include <string>
 
 using namespace std;
@@ -44,7 +46,6 @@ int main(int, char** argv)
 	Size wSize = fd.to_mat().size();
 
 	max_desc = fd.getBoundSize();
-	cout << max_desc << endl;
 	max_grid = s.getMaxGridScale();
 
 	desc_track_pos = 50;
@@ -69,9 +70,6 @@ int main(int, char** argv)
 	return 0;
 }
 
-//I tried making the trackbar range between 0 and 100
-//and use position as a percentage of max, but it still weighted
-//heavily to lower trackbar numbers. I committed the code, feel free to check it out
 void showDesc(int, void* data) {
 	Mat m;
 	FourierDescriptor fd(bin_img);
@@ -84,8 +82,13 @@ void showDesc(int, void* data) {
 void showShape(int, void* data) {
 	static Mat shapeL, shapeR, shapeLR;
 	ShapeNumber *s = (ShapeNumber *)data;
+	vector<int> code;
 	s->rescaleBoundary(shape_track_pos);
+	code = s->getCode();
 	shapeL = s->to_mat();
+	std::stringstream codeString;
+	std::copy(code.begin(), code.end(), std::ostream_iterator<int>(codeString, ""));
+	putText(shapeL, codeString.str().c_str(), Point(30,30), FONT_HERSHEY_SCRIPT_SIMPLEX, 0.2, Scalar(255,255,255), 1, CV_AA);
 	//shapeR = s->to_connected_mat();
 	//hconcat(shapeL, shapeR, shapeLR);
 	imshow(shapeNumberName, shapeL);
