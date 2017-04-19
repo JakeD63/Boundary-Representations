@@ -44,6 +44,7 @@ int main(int, char** argv)
 	Size wSize = fd.to_mat().size();
 
 	max_desc = fd.getBoundSize();
+	cout << max_desc << endl;
 	max_grid = s.getMaxGridScale();
 
 	desc_track_pos = 50;
@@ -52,7 +53,7 @@ int main(int, char** argv)
 	//set up descriptor window
 	namedWindow(descriptorName);
 	resizeWindow(descriptorName, wSize.width, wSize.height);
-	createTrackbar("Descriptor Count", descriptorName, &desc_track_pos, 100, showDesc, &fd);
+	createTrackbar("Descriptor Count", descriptorName, &desc_track_pos, max_desc, showDesc, &fd);
 
 	//set up shape number window
 	namedWindow(shapeNumberName);
@@ -62,7 +63,6 @@ int main(int, char** argv)
 	//display images before trackbar has moved
 	showDesc(desc_track_pos, &fd);
 	showShape(shape_track_pos, &s);
-
 
 	waitKey(0);
 
@@ -75,7 +75,8 @@ int main(int, char** argv)
 void showDesc(int, void* data) {
 	Mat m;
 	FourierDescriptor fd(bin_img);
-	fd.reconstruct(((desc_track_pos / 100.0) * max_desc));
+	fd.reconstruct(log(desc_track_pos));
+	//fd.reconstruct(((desc_track_pos / 100.0) * max_desc));
 	m = fd.to_mat();
 	imshow(descriptorName, m);
 }
@@ -85,7 +86,7 @@ void showShape(int, void* data) {
 	ShapeNumber *s = (ShapeNumber *)data;
 	s->rescaleBoundary(shape_track_pos);
 	shapeL = s->to_mat();
-	shapeR = s->to_connected_mat();
-	hconcat(shapeL, shapeR, shapeLR);
-	imshow(shapeNumberName, shapeLR);
+	//shapeR = s->to_connected_mat();
+	//hconcat(shapeL, shapeR, shapeLR);
+	imshow(shapeNumberName, shapeL);
 }
