@@ -183,7 +183,6 @@ void FourierDescriptor::reconstruct(unsigned int degree)
 
 	// Calculate the start offset in the array
 	int start = (int) floor(degree / 2);
-	 // start = ((int) floor(N/2)) - start;
 
 	// Calculate how far to walk in the array
 	int end = start + elim;
