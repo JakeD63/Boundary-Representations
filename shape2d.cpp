@@ -183,6 +183,23 @@ Mat shape2D::to_mat() {
 }
 
 
+void shape2D::update_extrema()
+{
+
+	for(auto p : boundary)
+	{
+		if ( p.x < min_x )
+			min_x = p.x;
+		if ( p.y < min_y )
+			min_y = p.y;
+		if ( p.x > max_x )
+			max_x = p.x;
+		if ( p.y > max_y )
+			max_y = p.y;
+	}
+		
+}
+
 //! shape2D destructor
 shape2D::~shape2D()
 {

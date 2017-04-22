@@ -8,11 +8,10 @@
 class FourierDescriptor : public shape2D
 {
 	private:
-		unsigned int N;
-		fftw_complex *out;
-		void fftshift(fftw_complex *input, fftw_complex *output, int dim);
-		void ifftshift(fftw_complex *input, fftw_complex *output, int dim);
-		void truncate(int degree);
+		unsigned int N, cur_degree;
+		fftw_complex *out, *in, *orig;
+		fftw_plan plan, ifft_plan;
+
 	public:
 		FourierDescriptor(cv::Mat img);
 		~FourierDescriptor();

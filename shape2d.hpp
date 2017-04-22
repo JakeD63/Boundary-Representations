@@ -12,6 +12,7 @@ class shape2D {
 		void find_next(cv::Point& p, cv::Point& c_n);
 	
 	protected:
+		void update_extrema();
 		std::vector<cv::Point> boundary;
 		int max_x, max_y, min_x, min_y;
 
