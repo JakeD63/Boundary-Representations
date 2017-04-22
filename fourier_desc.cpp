@@ -20,7 +20,6 @@
 #include <fftw3.h>
 #include <cmath>
 #include <vector>
-#include <limits>
 #include "fourier_desc.hpp"
 
 /**

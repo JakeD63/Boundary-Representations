@@ -3,6 +3,7 @@
 
 #include <opencv2/opencv.hpp>
 #include <vector>
+#include <iostream>
 
 class shape2D {
 	private:
@@ -15,12 +16,14 @@ class shape2D {
 		void update_extrema();
 		std::vector<cv::Point> boundary;
 		int max_x, max_y, min_x, min_y;
+		cv::Size imgSize;
 
 	public:
 		shape2D(cv::Mat img);
 		~shape2D();
 
-		cv::Mat to_mat();
+		virtual cv::Mat to_mat();
+		unsigned int getBoundSize();
 };
 
 #endif

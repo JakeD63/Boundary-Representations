@@ -4,12 +4,25 @@
 
 #include "ShapeNumber.hpp"
 
-ShapeNumber::ShapeNumber(cv::Mat img, int gridScale) : shape2D(img), gridScale(gridScale) {
+ShapeNumber::ShapeNumber(cv::Mat img, int scale) : shape2D(img) {
+	setGridScale(scale);
 	scaleBoundary();
 	genChainCode();
 	getMinMagnitude();
 	normalizeRot();
+}
 
+void ShapeNumber::setGridScale(int scale) {
+	int max = this->getMaxGridScale();
+	if(gridScale > max)
+		this->gridScale = max;
+	else
+		this->gridScale = scale;
+}
+
+//get the maximum grid resize allowed by boundary
+int ShapeNumber::getMaxGridScale() {
+	return this->GRID_MAX;
 }
 
 //make grid larger, so we only take
@@ -22,7 +35,7 @@ ShapeNumber::ShapeNumber(cv::Mat img, int gridScale) : shape2D(img), gridScale(g
 void ShapeNumber::scaleBoundary() {
 	Point c, tl, tr, bl, br;
 	vector<double> distances; //tl, tr, bl, br
-	vector<Point> boundary;
+	vector<Point> temp_bound;
 	int min_p;
 	for (unsigned int i = 0; i < this->boundary.size(); i++) {
 		c = this->boundary.at(i);
@@ -46,18 +59,19 @@ void ShapeNumber::scaleBoundary() {
 		distances.push_back(distance(c, br));
 
 		min_p = (int) std::distance(distances.begin(), min_element(distances.begin(), distances.end()));
+
 		switch (min_p) {
 			case 0:
-				boundary.push_back(tl);
+				temp_bound.push_back(tl);
 				break;
 			case 1:
-				boundary.push_back(tr);
+				temp_bound.push_back(tr);
 				break;
 			case 2:
-				boundary.push_back(bl);
+				temp_bound.push_back(bl);
 				break;
 			case 3:
-				boundary.push_back(br);
+				temp_bound.push_back(br);
 				break;
 			default:
 				cerr << "scaleBoundary: min_p not in range 0-3: " << min_p << endl;
@@ -67,9 +81,9 @@ void ShapeNumber::scaleBoundary() {
 		distances.clear();
 	}
 	//add unique points to scaled boundary
-	for (unsigned int i = 0; i < boundary.size() - 1; i++) {
-		if (!(boundary.at(i) == boundary.at(i + 1)))
-			scaledBoundary.push_back(boundary[i]);
+	for (unsigned int i = 0; i < temp_bound.size() - 1; i++) {
+		if (!(temp_bound.at(i) == temp_bound.at(i + 1)))
+			scaledBoundary.push_back(temp_bound[i]);
 	}
 
 }
@@ -145,25 +159,46 @@ void ShapeNumber::normalizeRot() {
 
 }
 
+void ShapeNumber::rescaleBoundary(int scale) {
+	this->scaledBoundary.clear();
+	this->shapeNumber.clear();
+
+	setGridScale(scale);
+	scaleBoundary();
+	genChainCode();
+	getMinMagnitude();
+	normalizeRot();
+}
+
 //! to_mat generates a normalized mat with our boundary in it.
 Mat ShapeNumber::to_mat() {
-	Mat output = Mat::zeros(max_y + 2, max_x + 2, CV_8UC1);
-	for(unsigned int i = 0; i < scaledBoundary.size(); i++) {
-		output.at<uchar>(scaledBoundary[i]) = 255;
-	}
-	return output;
+	this->img = redrawPoints(this->img);
+	return this->img;
 }
 
 //return a Mat image with points connected with
 //white line
 Mat ShapeNumber::to_connected_mat() {
 	//use cvLine to draw lines between all points
-	Mat img = this->to_mat();
+	this->connectedImg = this->redrawPoints(this->connectedImg);
 	for(int i = 0; i < scaledBoundary.size() - 1; i++) {
-		line(img, scaledBoundary.at(i), scaledBoundary.at(i+1), Scalar(255,255,255),1,CV_AA );
+		line(this->connectedImg, scaledBoundary.at(i), scaledBoundary.at(i+1), Scalar(255,255,255),1,CV_AA );
+	}
+	return this->connectedImg;
+}
+
+//NOTE: img = Mat::zeroes does not create a new
+//image and assign it, the = operator is overloaded
+//in opencv for images of the same type, it will redraw over
+//img memory
+Mat ShapeNumber::redrawPoints(Mat img) {
+	img = Mat::zeros(max_y + 2, max_x + 2, CV_8UC1);
+	for(unsigned int i = 0; i < scaledBoundary.size(); i++) {
+		img.at<uchar>(scaledBoundary[i]) = 255;
 	}
 	return img;
 }
+
 
 //get shape number
 vector<int> ShapeNumber::getCode() {

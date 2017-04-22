@@ -30,6 +30,7 @@ private:
 
 	std::vector<int> chainCode;
 
+	Mat img, connectedImg;
 };
 
 

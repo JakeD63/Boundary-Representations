@@ -13,10 +13,10 @@ using namespace cv;
 class ShapeNumber : public shape2D {
 public:
 	ShapeNumber(Mat img, int scale = 5);
-
+	void rescaleBoundary(int scale);
 	Mat to_mat();
 	Mat to_connected_mat();
-
+	int getMaxGridScale();
 	vector<int> getCode();
 	int at(unsigned int i);
 	int size();
@@ -24,6 +24,7 @@ public:
 	int& operator[](unsigned int i);
 
 private:
+	void setGridScale(int scale);
 	void scaleBoundary();
 
 	void genChainCode();
@@ -36,15 +37,16 @@ private:
 
 	double distance(Point a, Point b);
 
+	Mat redrawPoints(Mat img);
 	int roundUp(int n, int m);
 
 	int roundDown(int n, int m);
 
+	Mat img, connectedImg;
 	int gridScale;
+	const int GRID_MAX = 100;
 	std::vector<int> shapeNumber;
 	std::vector<Point> scaledBoundary;
-
-
 };
 
 
