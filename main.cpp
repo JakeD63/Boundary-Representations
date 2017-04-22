@@ -22,7 +22,7 @@ string descriptorName = "desc";
 string shapeNumberName = "shape";
 int desc_track_pos, shape_track_pos;
 int max_desc, max_grid;
-
+FourierDescriptor* fdp;
 
 //quick and dirty gui w/trackbar
 //crashes sometimes (probably memory allocation related)
@@ -42,10 +42,11 @@ int main(int, char** argv)
 	threshold(img, bin_img, 128, 255, 1);
 
 	FourierDescriptor fd = FourierDescriptor(bin_img);
+	fdp = &fd;
 	ShapeNumber s = ShapeNumber(bin_img);
 	Size wSize = fd.to_mat().size();
 
-	max_desc = fd.getBoundSize();
+	max_desc = (int) floor(fd.getBoundSize() / 5);
 	max_grid = s.getMaxGridScale();
 
 	desc_track_pos = 50;
@@ -72,10 +73,9 @@ int main(int, char** argv)
 
 void showDesc(int, void* data) {
 	Mat m;
-	FourierDescriptor fd(bin_img);
-	fd.reconstruct(log(desc_track_pos));
-	//fd.reconstruct(((desc_track_pos / 100.0) * max_desc));
-	m = fd.to_mat();
+	// *fdp.reconstruct(log(desc_track_pos));
+	fdp->reconstruct(desc_track_pos);
+	m = fdp->to_mat();
 	imshow(descriptorName, m);
 }
 
