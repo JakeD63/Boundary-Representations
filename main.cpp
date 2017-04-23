@@ -39,7 +39,6 @@ int main(int, char** argv)
 	cvtColor(img, img, CV_BGR2GRAY);
 
 	threshold(img, bin_img, 128, 255, 1);
-
 	FourierDescriptor fd = FourierDescriptor(bin_img);
 
 	ShapeNumber s = ShapeNumber(bin_img);
@@ -62,7 +61,7 @@ int main(int, char** argv)
 
 	//display images before trackbar has moved
 	s.rescaleBoundary(1);
-	fd.reconstruct(1);
+	fd.reconstruct(max_desc);
 	imshow(shapeNumberName, s.to_mat());
 	imshow(descriptorName, fd.to_mat());
 	waitKey(0);
