@@ -23,6 +23,7 @@ string shapeNumberName = "shape";
 int desc_track_pos, shape_track_pos;
 int max_desc, max_grid;
 FourierDescriptor* fdp;
+ShapeNumber* snp;
 
 //quick and dirty gui w/trackbar
 //crashes sometimes (probably memory allocation related)
@@ -44,6 +45,7 @@ int main(int, char** argv)
 	FourierDescriptor fd = FourierDescriptor(bin_img);
 	fdp = &fd;
 	ShapeNumber s = ShapeNumber(bin_img);
+	snp = &s;
 	Size wSize = fd.to_mat().size();
 
 	max_desc = (int) floor(fd.getBoundSize() / 5);
@@ -55,16 +57,18 @@ int main(int, char** argv)
 	//set up descriptor window
 	namedWindow(descriptorName);
 	resizeWindow(descriptorName, wSize.width, wSize.height);
-	createTrackbar("Descriptor Count", descriptorName, &desc_track_pos, max_desc, showDesc, &fd);
+	createTrackbar("Descriptor Count", descriptorName, &desc_track_pos, max_desc, showDesc);
 
 	//set up shape number window
 	namedWindow(shapeNumberName);
 	resizeWindow(shapeNumberName, wSize.width, wSize.height);
-	createTrackbar("Shape Grid Scale", shapeNumberName, &shape_track_pos, max_grid, showShape, &s);
+	createTrackbar("Shape Grid Scale", shapeNumberName, &shape_track_pos, max_grid, showShape);
 
 	//display images before trackbar has moved
-	showDesc(desc_track_pos, &fd);
-	showShape(shape_track_pos, &s);
+	fdp->reconstruct(max_desc);
+	snp->rescaleBoundary(1);
+	imshow(descriptorName, fdp->to_mat());
+	imshow(shapeNumberName, snp->to_mat());
 
 	waitKey(0);
 
@@ -80,16 +84,7 @@ void showDesc(int, void* data) {
 }
 
 void showShape(int, void* data) {
-	static Mat shapeL, shapeR, shapeLR;
-	ShapeNumber *s = (ShapeNumber *)data;
-	vector<int> code;
-	s->rescaleBoundary(shape_track_pos);
-	code = s->getCode();
-	shapeL = s->to_mat();
-	std::stringstream codeString;
-	std::copy(code.begin(), code.end(), std::ostream_iterator<int>(codeString, ""));
-	putText(shapeL, codeString.str().c_str(), Point(30,30), FONT_HERSHEY_SCRIPT_SIMPLEX, 0.2, Scalar(255,255,255), 1, CV_AA);
-	//shapeR = s->to_connected_mat();
-	//hconcat(shapeL, shapeR, shapeLR);
-	imshow(shapeNumberName, shapeL);
+	snp->rescaleBoundary(shape_track_pos);
+
+	imshow(shapeNumberName, snp->to_mat());
 }
