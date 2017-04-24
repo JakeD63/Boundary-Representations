@@ -13,6 +13,26 @@ const string HELP = "usage: ./dip3 <imagefile>";
 
 void showFdGui(int trac, void* data);
 
+void erodeToSingle(Mat bimg, Mat& res, int thresh)
+{
+	Mat element = getStructuringElement( MORPH_RECT,
+			Size( 7, 7 ),
+			Point( 3, 3) );
+
+	bool done = false;
+	do {
+		erode(bimg, res, element);
+
+		FourierDescriptor fd(res);
+		if( fd.size() > thresh ) 
+			return;
+
+	} while ( !done );
+
+
+}
+
+
 struct fd_gui {
 	int desc_count, max_d, wHeight, wWidth;
 	string wName;
@@ -24,9 +44,8 @@ struct fd_gui {
 		wWidth(width),
 		wName(name)
 	{
-		max_d = (int) floor(fd.size() / 4);
+		max_d = fd.size();
 		desc_count = (int) floor(max_d / 2);
-
 		namedWindow(wName);
 		resizeWindow(wName, wWidth, wHeight);
 	};
@@ -50,6 +69,7 @@ int main(int argc, char **argv)
 	}
 
 	Mat bin_img;
+	Mat res_img;
 	Mat img = imread(argv[1]);
 
 	if( !img.data )
@@ -59,12 +79,12 @@ int main(int argc, char **argv)
 	namedWindow(testW, WINDOW_NORMAL);
 	imshow(testW, img);
 	resizeWindow(testW, 600, 600);
-
+	
 	threshold(img, bin_img, 128, 255, 1);
 	imshow(testW, bin_img);
+	
 
-	shape2D s(bin_img);
-	imshow(testW, s.to_mat());
+	/* erodeToSingle(bin_img, res_img, 500); */
 	
 	fd_gui fg(bin_img, 600, 600, testW);
 	createTrackbar("Descriptor Count", testW, &fg.desc_count, fg.max_d, showFdGui, &fg);
