@@ -9,6 +9,8 @@ build
 *.swp
 *.gif
 tags
+html
+latex
 
 # Compiled Object files
 *.slo
