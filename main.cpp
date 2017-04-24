@@ -24,7 +24,6 @@ void preProcess(Mat bimg, Mat& res)
 
 int main(int argc, char **argv)
 {
-	string fdWin = string("Fourier Descriptors");
 	if ( argc < 2 )
 	{
 		cout << HELP << endl;
@@ -41,8 +40,7 @@ int main(int argc, char **argv)
 	// TODO: Insert ShapeD code here
 
 		
-	fd_gui fg(res_img, 600, 600, fdWin);
-	
+	fd_gui fg(res_img, 600, 600, string("Fourier Descriptors"));
 	createTrackbar("Descriptor Count", fg.wName, &fg.desc_count, fg.max_d, showFdGui, &fg);
 
 	waitKey(0);
