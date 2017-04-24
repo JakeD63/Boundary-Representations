@@ -246,7 +246,10 @@ Mat ShapeNumber::to_connected_mat() {
  * Draws scaled boundary onto image
  *
  * @paragraph Description
- * Walks boundary
+ * Walks boundary drawing points from scaled boundary.
+ * NOTE: the = operator is overloaded for Mat images of the same size,
+ * it overwrites img instead of construcing a new one. This means it is more
+ * memory efficient than constructing a new image.
  */
 Mat ShapeNumber::redrawPoints(Mat img) {
 	img = Mat::zeros(max_y + 2, max_x + 2, CV_8UC1);
@@ -256,25 +259,42 @@ Mat ShapeNumber::redrawPoints(Mat img) {
 	return img;
 }
 
-
-//get shape number
+/**
+ * Return Shape Number
+ */
 vector<int> ShapeNumber::getCode() {
 	return this->shapeNumber;
 }
 
-//get specific number from shape number
+/**
+ * Get specific number from code
+ *
+ * @paragraph Description
+ * at function for shape number
+ */
 int ShapeNumber::at(unsigned int i) {
 	return this->shapeNumber.at(i);
 }
 
-//get number of digits in shape number
-int ShapeNumber::size() {
+/**
+ * Get the size of the shape number
+ *
+ * @paragraph Description
+ * Return the size of the shape number vector
+ */int ShapeNumber::size() {
 	return (int) this->shapeNumber.size();
 }
 
-//convert chain code vector into integer
-//for magnitude comparisons
+/**
+ * Compare the integer value of two codes.
+ * Used for normalization
+ *
+ * @paragraph Description
+ * Walks both vectors checking for differences
+ * Returns 1 for larger, -1 for less than, 0 for equal
+ */
 int ShapeNumber::compareCodes(vector<int> a, vector<int> b) {
+	//to keep things simple for our purposes, only compare vectors of the same size
 	if(a.size() != b.size()) {
         cerr << "compareCodes: vector sizes must be equal" << endl;
         exit(0);
@@ -289,20 +309,32 @@ int ShapeNumber::compareCodes(vector<int> a, vector<int> b) {
   return 0;
 }
 
-//get distance between two 2D points
-double ShapeNumber::distance(Point a, Point b) {
+/**
+ * Calculate the distance between two points
+ *
+ * @paragraph Description
+ * uses distance formulate to get distance between a and b
+ */double ShapeNumber::distance(Point a, Point b) {
 	return sqrt(pow((b.x - a.x), 2) + pow((b.y - a.y), 2));
 }
 
-//rounds n up to nearest multiple of m
-int ShapeNumber::roundUp(int n, int m) {
+/**
+ * Rounds n up to nearest multiple of m
+ *
+ * @paragraph Description
+ * This is used for grid rescaling.
+ * @param n number to round
+ * @param m multiple to round to
+ */int ShapeNumber::roundUp(int n, int m) {
 	int r;
+	//if multiple is 0, return 0
 	if (m == 0)
 		return n;
-
+	//if n is a multiple of m, return 0
 	r = n % m;
 	if (r == 0)
 		return n;
+	//return n + m - remainder
 	return n + m - r;
 }
 
@@ -311,14 +343,22 @@ int ShapeNumber::roundDown(int n, int m) {
 	return roundUp(n - m, m);
 }
 
-//print operator for shape number
-ostream &operator<<(ostream &os, const ShapeNumber &s) {
+/**
+ * Overloaded print operator for shape number
+ *
+ * @paragraph Description
+ * Allows the use of << for printing shape numbers
+ */ostream &operator<<(ostream &os, const ShapeNumber &s) {
 	for (auto i : s.shapeNumber)
 		os << i;
 	return os;
 }
 
-//access operator for shape number
-int& ShapeNumber::operator[](unsigned int i) {
+/**
+ * OVerloaded [] operator for shape number vector
+ *
+ * @paragraph Description
+ * [] operator for shape number, mimics vector [] operator
+ */int& ShapeNumber::operator[](unsigned int i) {
 	return this->shapeNumber.at(i);
 }
