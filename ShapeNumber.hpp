@@ -12,7 +12,7 @@ using namespace cv;
 
 class ShapeNumber : public shape2D {
 public:
-	ShapeNumber(Mat img, int scale = 5);
+	ShapeNumber(Mat img, int scale = 1);
 	void rescaleBoundary(int scale);
 	Mat to_mat();
 	Mat to_connected_mat();
