@@ -13,8 +13,8 @@ ShapeNumber::ShapeNumber(cv::Mat img, int scale) : shape2D(img) {
 }
 
 void ShapeNumber::setGridScale(int scale) {
-	int max = this->getMaxGridScale();
-	if(gridScale > max)
+	int max = this->GRID_MAX;
+	if(scale > max)
 		this->gridScale = max;
 	else
 		this->gridScale = scale;
