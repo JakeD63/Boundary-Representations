@@ -1,3 +1,4 @@
+
 #include "shape2d.hpp"
 
 
@@ -64,7 +65,9 @@ void shape2D::rotate_cw(const Point p, Point& c_n)
 
 
 }
-
+/**
+ * \brief walk from top left of image to find first boundary point
+ */
 Point shape2D::find_tm_lm(Mat img)
 {	
 
@@ -81,8 +84,12 @@ Point shape2D::find_tm_lm(Mat img)
 	return Point(0, img.cols);
 }
 
-//! shape2D constructor
-//! @param img Expects Mat containing binary thresholded image
+/**
+ * \brief shape2D constructor, expects image to have been binary thresholded
+ *
+ * Walk image using boundary following algorithm to generate vector of boundary points.
+ * This algorithm is described in chapter 11.1.1 in the textbook
+ */
 shape2D::shape2D(Mat img)
 {
 	this->imgSize = img.size();
@@ -116,7 +123,6 @@ shape2D::shape2D(Mat img)
 
 	while(!done)	
 	{
-
 
 		Point save; 	// Save last c_n for next loop
 		Scalar in;	// Intensity of c_n
@@ -169,7 +175,9 @@ shape2D::shape2D(Mat img)
 							
 }
 
-//! to_mat generates a normalized mat with our boundary in it.
+/**
+ * \brief to_mat generates a normalized mat with our boundary in it.
+ */
 Mat shape2D::to_mat() {
 	Mat output = Mat::zeros(max_y + 2, max_x + 2, CV_8UC1);
 	for ( unsigned int i = boundary.size(); i-- > 0; )
@@ -180,12 +188,17 @@ Mat shape2D::to_mat() {
 	return output;
 }
 
+/**
+ * \brief get size of the boundary
+ */
 unsigned int shape2D::getBoundSize() {
 	return this->boundary.size();
 }
 
 
-
+/**
+ * \brief updates min and max points from boundary
+ */
 void shape2D::update_extrema()
 {
 
@@ -203,7 +216,9 @@ void shape2D::update_extrema()
 		
 }
 
-//! shape2D destructor
+/**
+ * \brief shape2d destrucor
+ */
 shape2D::~shape2D()
 {
 	return;

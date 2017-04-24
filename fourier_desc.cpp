@@ -22,7 +22,7 @@ FourierDescriptor::FourierDescriptor(cv::Mat img)
 	// Obtain memory for input array, free in the destructor 
 	in = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N);
 
-	// Obtain memory for the original boundary, incase we need to recover it
+	// Obtain memory for the original boundary, in case we need to recover it
 	// free in the destructor
 	orig = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N);
 	
