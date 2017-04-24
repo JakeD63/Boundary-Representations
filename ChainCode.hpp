@@ -1,7 +1,3 @@
-//
-// Created by jake on 4/15/17.
-//
-
 #ifndef DIP3_CHAINCODE_HPP
 #define DIP3_CHAINCODE_HPP
 
@@ -9,6 +5,7 @@
 using namespace std;
 using namespace cv;
 
+/*! Chain Code calculates the chain code of boundary from shape2D */
 class ChainCode : public shape2D {
 public:
 	ChainCode(Mat img);

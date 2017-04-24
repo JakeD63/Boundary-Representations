@@ -1,7 +1,3 @@
-//
-// Created by jake on 4/14/17.
-//
-
 #ifndef DIP3_CHAINCODE_H
 #define DIP3_CHAINCODE_H
 #include "shape2d.hpp"
@@ -9,6 +5,7 @@
 using namespace std;
 using namespace cv;
 
+/*! ShapeNumber calculates the shape number a boundary that has been rescaled to a different grid size */
 class ShapeNumber : public shape2D {
 public:
 	ShapeNumber(Mat img, int scale = 1);

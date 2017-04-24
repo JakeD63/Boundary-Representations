@@ -4,6 +4,7 @@
 #include <fftw3.h>
 #include "shape2d.hpp"
 
+/*! Class to calculate and output Fourier Descriptors using boundary from shape2D */
 class FourierDescriptor : public shape2D
 {
 	private:
