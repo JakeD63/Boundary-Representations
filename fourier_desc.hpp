@@ -1,7 +1,6 @@
 #ifndef __FOURIER_DESC_HPP
 #define __FOURIER_DESC_HPP
 
-#include <opencv2/opencv.hpp>
 #include <fftw3.h>
 #include "shape2d.hpp"
 
