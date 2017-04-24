@@ -59,7 +59,7 @@ FourierDescriptor::FourierDescriptor(cv::Mat img)
 }
 
 /**
- * Turn whatever is in the output array back into a boundary.
+ * \brief whatever is in the output array back into a boundary.
  *
  * @paragraph fd_recons_dev_notes
  * This function runs our inverse fft on whatever is in out, and deposits it
@@ -123,7 +123,7 @@ void FourierDescriptor::reconstruct()
 }
 
 /**
- * Reconstruct the shape by degrees of Fourier Descriptor.
+ * \brief Reconstruct the shape by degrees of Fourier Descriptor.
  *
  * @paragraph Description
  * This function cuts down the number of descriptors used by zeroing out the
@@ -176,7 +176,7 @@ void FourierDescriptor::reconstruct(unsigned int degree)
 }
 
 /**
- * Generate a mat from our descriptors
+ * \brief Generate a mat from our descriptors
  */
 cv::Mat FourierDescriptor::to_mat()
 {
@@ -190,7 +190,7 @@ cv::Mat FourierDescriptor::to_mat()
 }
 
 /**
- * Get the size of the underlying boundary
+ * \brief Get the size of the underlying boundary
  */
 int FourierDescriptor::size()
 {
@@ -199,7 +199,7 @@ int FourierDescriptor::size()
 
 
 /**
- * Close out allocated resources for FD
+ * \brief Close out allocated resources for FD
  */
 FourierDescriptor::~FourierDescriptor()
 {	

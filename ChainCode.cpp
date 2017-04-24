@@ -1,10 +1,6 @@
 #include "ChainCode.hpp"
 /**
  * Constructor for Chain Code Object
- *
- * @paragraph Description
- * Use shape2D constructor, then generalize the code and
- * normalize for rotation
  */
 ChainCode::ChainCode(Mat img) : shape2D(img) {
 	genChainCode();
@@ -12,9 +8,8 @@ ChainCode::ChainCode(Mat img) : shape2D(img) {
 }
 
 /**
- * Generates chain code for boundary
+ * \brief Generates chain code for boundary
  *
- * @paragraph Description
  * Uses directions 0-7 for directions, with 0 being ->
  */
 void ChainCode::genChainCode() {
@@ -52,9 +47,8 @@ void ChainCode::genChainCode() {
 }
 
 /**
- * Normalize code for rotation
+ * \brief Normalize code for rotation
  *
- * @paragraph Description
  * Store difference between rotations in code.
  * This makes the code rotation invariant, so it can
  * more easily be used and compared to other codes.
@@ -75,9 +69,8 @@ void ChainCode::normalizeRot() {
 }
 
 /**
- * Turns scaled boundary into mat image for display
+ * \brief Turns scaled boundary into mat image for display
  *
- * @paragraph Description
  * redraws points onto img and returns it
  */
 Mat ChainCode::to_mat() {
@@ -90,10 +83,9 @@ Mat ChainCode::to_mat() {
 }
 
 /**
- * Turns scaled boundary into mat image for display.
+ * \brief Turns scaled boundary into mat image for display.
  * The image has its points connected
  *
- * @paragraph Description
  * redraws points onto img, then draws lines between all points
  */
 Mat ChainCode::to_connected_mat() {
@@ -106,9 +98,8 @@ Mat ChainCode::to_connected_mat() {
 }
 
 /**
- * Returns the shape chain code
+ * \brief Returns the shape chain code
  *
- * @paragraph Description
  * return chain code vector
  */
 vector<int> ChainCode::getCode() {
@@ -116,9 +107,8 @@ vector<int> ChainCode::getCode() {
 }
 
 /**
- * Get specific number from code
+ * \brief Get specific number from code
  *
- * @paragraph Description
  * at function for chain code
  */
 int ChainCode::at(unsigned int i) {
@@ -126,9 +116,8 @@ int ChainCode::at(unsigned int i) {
 }
 
 /**
- * Get the size of the chain code
+ * \brief Get the size of the chain code
  *
- * @paragraph Description
  * Return the size of the chain code vector
  */
 int ChainCode::size() {
@@ -136,9 +125,8 @@ int ChainCode::size() {
 }
 
 /**
- * Overloaded print operator for chain code
+ * \brief Overloaded print operator for chain code
  *
- * @paragraph Description
  * Allows the use of << for printing chain codes
  */
 ostream &operator<<(ostream &os, const ChainCode &s) {
@@ -148,9 +136,8 @@ ostream &operator<<(ostream &os, const ChainCode &s) {
 }
 
 /**
- * OVerloaded [] operator for chain code vector
+ * \brief Overloaded [] operator for chain code vector
  *
- * @paragraph Description
  * [] operator for chain code, mimics vector
  */
 int& ChainCode::operator[](unsigned int i) {

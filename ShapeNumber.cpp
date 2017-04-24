@@ -1,9 +1,8 @@
 #include "ShapeNumber.hpp"
 
 /**
- * Construct ShapeNumber Object
+ * \brief Construct ShapeNumber Object
  *
- * @paragraph Description
  * Take in image and scale of grid and use it to construct object.
  * After getting boundary from shape2D, scale it, and normalize the code.
  */
@@ -16,9 +15,8 @@ ShapeNumber::ShapeNumber(cv::Mat img, int scale) : shape2D(img) {
 }
 
 /**
- * Ensure the grid scale is within range
+ * \brief Ensure the grid scale is within range
  *
- * @paragraph Description
  * Check scale against the max grid value.
  * This is done because too large a grid makes
  * the chain code too small to use or display
@@ -32,9 +30,8 @@ void ShapeNumber::setGridScale(int scale) {
 }
 
 /**
- * returns the max scale
+ * \brief returns the max scale
  *
- * @paragraph Description
  * Returns the max grid scale the object will allow. This is
  * mostly used for the gui trackbar max value.
  */
@@ -43,9 +40,8 @@ int ShapeNumber::getMaxGridScale() {
 }
 
 /**
- * Scale image boundary to new grid size
+ * \brief Scale image boundary to new grid size
  *
- * @paragraph Description
  * We make the grid larger than 1x1, then calculate
  * the closest grid corner from each point.
  * EX. (12, 33) with a scale of 5 becomes (10, 35).
@@ -110,9 +106,8 @@ void ShapeNumber::scaleBoundary() {
 }
 
 /**
- * Generate a chain code from boundary
+ * \brief Generate a chain code from boundary
  *
- * @paragraph Description
  * Walk the boundary storing the direction from
  * the current point to the next. Directions are represented as
  * 0-7 counterclockwise, with 0 being ->
@@ -153,9 +148,8 @@ void ShapeNumber::genChainCode() {
 }
 
 /**
- * Gets minimum magnitude of chain code
+ * \brief Gets minimum magnitude of chain code
  *
- * @paragraph Description
  * Rotate the chain code until we get one that is smaller than
  * the rest if they are treated as integers
  */
@@ -175,9 +169,8 @@ void ShapeNumber::getMinMagnitude() {
 
 
 /**
- * Normalize code for rotation
+ * \brief Normalize code for rotation
  *
- * @paragraph Description
  * Store difference between rotations in code.
  * This makes the code rotation invariant, so it can
  * more easily be used and compared to other codes.
@@ -198,10 +191,9 @@ void ShapeNumber::normalizeRot() {
 }
 
 /**
- * Rescale boundary size. This is implemented so you can
+ * \brief Rescale boundary size. This is implemented so you can
  * resize the grid instead of having to create a new object.
  *
- * @paragraph Description
  * Clears object data and re-does the constructor
  */
 void ShapeNumber::rescaleBoundary(int scale) {
@@ -216,9 +208,8 @@ void ShapeNumber::rescaleBoundary(int scale) {
 }
 
 /**
- * Turns scaled boundary into mat image for display
+ * \brief Turns scaled boundary into mat image for display
  *
- * @paragraph Description
  * redraws points onto img and returns it
  */
 Mat ShapeNumber::to_mat() {
@@ -227,12 +218,9 @@ Mat ShapeNumber::to_mat() {
 }
 
 /**
- * Turns scaled boundary into mat image for display.
+ * \brief Turns scaled boundary into mat image for display.
  * The image has its points connected
- *
- * @paragraph Description
- * redraws points onto img, then draws lines between all points
- */
+ * */
 Mat ShapeNumber::to_connected_mat() {
 	//use cvLine to draw lines between all points
 	this->connectedImg = this->redrawPoints(this->connectedImg);
@@ -243,9 +231,8 @@ Mat ShapeNumber::to_connected_mat() {
 }
 
 /**
- * Draws scaled boundary onto image
+ * \brief Draws scaled boundary onto image
  *
- * @paragraph Description
  * Walks boundary drawing points from scaled boundary.
  * NOTE: the = operator is overloaded for Mat images of the same size,
  * it overwrites img instead of construcing a new one. This means it is more
@@ -260,40 +247,30 @@ Mat ShapeNumber::redrawPoints(Mat img) {
 }
 
 /**
- * Returns the shape number vector
- *
- * @paragraph Description
- * return shape number vector
+ * \brief Returns the shape number vector
  */
 vector<int> ShapeNumber::getCode() {
 	return this->shapeNumber;
 }
 
 /**
- * Get specific number from code
- *
- * @paragraph Description
- * at function for shape number
+ * \brief Get specific number from code
  */
 int ShapeNumber::at(unsigned int i) {
 	return this->shapeNumber.at(i);
 }
 
 /**
- * Get the size of the shape number
- *
- * @paragraph Description
- * Return the size of the shape number vector
+ * \brief Get the size of the shape number
  */
 int ShapeNumber::size() {
 	return (int) this->shapeNumber.size();
 }
 
 /**
- * Compare the integer value of two codes.
+ * \brief Compare the integer value of two codes.
  * Used for normalization
  *
- * @paragraph Description
  * Walks both vectors checking for differences
  * Returns 1 for larger, -1 for less than, 0 for equal
  */
@@ -314,22 +291,20 @@ int ShapeNumber::compareCodes(vector<int> a, vector<int> b) {
 }
 
 /**
- * Calculate the distance between two points
- *
- * @paragraph Description
- * uses distance formulate to get distance between a and b
- */double ShapeNumber::distance(Point a, Point b) {
+ * \brief Calculate the distance between two points
+*/
+double ShapeNumber::distance(Point a, Point b) {
 	return sqrt(pow((b.x - a.x), 2) + pow((b.y - a.y), 2));
 }
 
 /**
- * Rounds n up to nearest multiple of m
+ * \brief Rounds n up to nearest multiple of m
  *
- * @paragraph Description
  * This is used for grid rescaling.
  * @param n number to round
  * @param m multiple to round to
- */int ShapeNumber::roundUp(int n, int m) {
+ */
+int ShapeNumber::roundUp(int n, int m) {
 	int r;
 	//if multiple is 0, return 0
 	if (m == 0)
@@ -342,16 +317,15 @@ int ShapeNumber::compareCodes(vector<int> a, vector<int> b) {
 	return n + m - r;
 }
 
-//rounds n down to nearest multiple of m
+/**
+ * \brief rounds down using roundUp function
+ */
 int ShapeNumber::roundDown(int n, int m) {
 	return roundUp(n - m, m);
 }
 
 /**
- * Overloaded print operator for shape number
- *
- * @paragraph Description
- * Allows the use of << for printing shape numbers
+ * \brief Overloaded print operator for shape number
  */
 ostream &operator<<(ostream &os, const ShapeNumber &s) {
 	for (auto i : s.shapeNumber)
@@ -360,10 +334,7 @@ ostream &operator<<(ostream &os, const ShapeNumber &s) {
 }
 
 /**
- * OVerloaded [] operator for shape number vector
- *
- * @paragraph Description
- * [] operator for shape number, mimics vector
+ * \brief Overloaded [] operator for shape number vector
  */
 int& ShapeNumber::operator[](unsigned int i) {
 	return this->shapeNumber.at(i);
