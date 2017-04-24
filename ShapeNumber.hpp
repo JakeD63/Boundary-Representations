@@ -41,11 +41,12 @@ private:
 
 	int roundDown(int n, int m);
 
-	Mat img, connectedImg;
-	int gridScale;
-	const int GRID_MAX = 100;
-	std::vector<int> shapeNumber;
-	std::vector<Point> scaledBoundary;
+	Mat img, /*!<image to draw points on */
+		connectedImg; /*!<image with points connected */
+	int gridScale; /*!< scale of grid size (ex, 5x5) */
+	const int GRID_MAX = 100; /*!< max grid scale allowed */
+	std::vector<int> shapeNumber; /*!< shape number of boundary */
+	std::vector<Point> scaledBoundary; /*!< boundary after rescaling of grid */
 };
 
 

@@ -61,7 +61,6 @@ FourierDescriptor::FourierDescriptor(cv::Mat img)
 /**
  * \brief whatever is in the output array back into a boundary.
  *
- * @paragraph fd_recons_dev_notes
  * This function runs our inverse fft on whatever is in out, and deposits it
  * into in. It is necessary to make a few corrections for the negative numbers
  * that will be output by the inverse. I've tried to implement this in a way
@@ -125,7 +124,6 @@ void FourierDescriptor::reconstruct()
 /**
  * \brief Reconstruct the shape by degrees of Fourier Descriptor.
  *
- * @paragraph Description
  * This function cuts down the number of descriptors used by zeroing out the
  * high frequencies to leave a count of descriptors that matches the degree
  * passed to the function.

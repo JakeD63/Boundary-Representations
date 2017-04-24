@@ -28,9 +28,10 @@ private:
 
 	void normalizeRot();
 
-	std::vector<int> chainCode;
+	std::vector<int> chainCode; /*!< chain code of boundary */
 
-	Mat img, connectedImg;
+	Mat img, /*!< image to output */
+			connectedImg; /*!< image with connected points */
 };
 
 
