@@ -1,7 +1,3 @@
-#include <opencv2/opencv.hpp>
-#include <fftw3.h>
-#include <cmath>
-#include <vector>
 #include "fourier_desc.hpp"
 
 /**
