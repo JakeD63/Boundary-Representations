@@ -4,7 +4,6 @@
 
 #ifndef DIP3_CHAINCODE_H
 #define DIP3_CHAINCODE_H
-
 #include "shape2d.hpp"
 
 using namespace std;
