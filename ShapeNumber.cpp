@@ -260,7 +260,10 @@ Mat ShapeNumber::redrawPoints(Mat img) {
 }
 
 /**
- * Return Shape Number
+ * Returns the shape number vector
+ *
+ * @paragraph Description
+ * return shape number vector
  */
 vector<int> ShapeNumber::getCode() {
 	return this->shapeNumber;
@@ -281,7 +284,8 @@ int ShapeNumber::at(unsigned int i) {
  *
  * @paragraph Description
  * Return the size of the shape number vector
- */int ShapeNumber::size() {
+ */
+int ShapeNumber::size() {
 	return (int) this->shapeNumber.size();
 }
 
@@ -348,7 +352,8 @@ int ShapeNumber::roundDown(int n, int m) {
  *
  * @paragraph Description
  * Allows the use of << for printing shape numbers
- */ostream &operator<<(ostream &os, const ShapeNumber &s) {
+ */
+ostream &operator<<(ostream &os, const ShapeNumber &s) {
 	for (auto i : s.shapeNumber)
 		os << i;
 	return os;
@@ -358,7 +363,8 @@ int ShapeNumber::roundDown(int n, int m) {
  * OVerloaded [] operator for shape number vector
  *
  * @paragraph Description
- * [] operator for shape number, mimics vector [] operator
- */int& ShapeNumber::operator[](unsigned int i) {
+ * [] operator for shape number, mimics vector
+ */
+int& ShapeNumber::operator[](unsigned int i) {
 	return this->shapeNumber.at(i);
 }
