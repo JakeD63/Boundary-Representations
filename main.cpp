@@ -40,11 +40,10 @@ int main(int argc, char **argv)
 
 	// TODO: Insert ShapeD code here
 
-	namedWindow(fdWin, WINDOW_NORMAL);
-	resizeWindow(fdWin, 600, 600);
 		
 	fd_gui fg(res_img, 600, 600, fdWin);
-	createTrackbar("Descriptor Count", fdWin, &fg.desc_count, fg.max_d, showFdGui, &fg);
+	
+	createTrackbar("Descriptor Count", fg.wName, &fg.desc_count, fg.max_d, showFdGui, &fg);
 
 	waitKey(0);
 	return 0;
