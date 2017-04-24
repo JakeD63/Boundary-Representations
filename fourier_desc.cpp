@@ -65,7 +65,7 @@ FourierDescriptor::FourierDescriptor(cv::Mat img)
 /**
  * Turn whatever is in the output array back into a boundary.
  *
- * @paragrap fd_recons_dev_notes
+ * @paragraph fd_recons_dev_notes
  * This function runs our inverse fft on whatever is in out, and deposits it
  * into in. It is necessary to make a few corrections for the negative numbers
  * that will be output by the inverse. I've tried to implement this in a way
