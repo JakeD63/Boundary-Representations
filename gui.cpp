@@ -16,18 +16,15 @@ struct shapenumber_gui {
 		maxScale = sn.getMaxGridScale();
 		namedWindow(wName);
 		resizeWindow(wName, 600, 600);
+		imshow(wName, sn.to_mat());
 	}
 
 };
 
 void showSnGui(int trac, void* data) {
-	cout << "callback started" << endl;
 	shapenumber_gui* temp = (shapenumber_gui*) data;
-	cout << "dereferenced date" << endl;
 	temp->sn.rescaleBoundary(trac);
-	cout << "recale call done" << endl;
 	imshow(temp->wName, temp->sn.to_mat());
-	cout << "callback finished" << endl;
 }
 
 /**

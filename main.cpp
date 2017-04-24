@@ -43,6 +43,8 @@ int main(int argc, char **argv)
 	fd_gui fg(res_img, 600, 600, string("Fourier Descriptors"));
 	createTrackbar("Descriptor Count", fg.wName, &fg.desc_count, fg.max_d, showFdGui, &fg);
 
+	shapenumber_gui sg(res_img, 600, 600, string("Shape Number"));
+	createTrackbar("Grid Scale", sg.wName, &sg.gridScale, sg.maxScale, showSnGui, &sg);
 	waitKey(0);
 	return 0;
 
