@@ -1,21 +1,3 @@
-/**
- * @authors Lawrence Hoffman
- * @brief Implementation of Fourier Descriptors
- *
- * @paragraph Description
- * Class: Digital Image Processing <SPRING 2017>
- * Instructor: Weiss, John PhD
- * Implements Fourier Descriptors of shapes using FFTW and OpenCV
- * 
- * @paragraph DevNotes
- * The purpose of this code is to show how to create Fourier Descriptors as
- * explicitly as possible. This means a few things:
- * 	- code is over commented and assumes a reader unfamiliar with FD
- * 	- code uses more memory than necessary
- * 	- code is written for clarity as opposed to efficiency
- * 	- code contains NO fancy tricks
- */
-
 #include <opencv2/opencv.hpp>
 #include <fftw3.h>
 #include <cmath>
@@ -83,7 +65,7 @@ FourierDescriptor::FourierDescriptor(cv::Mat img)
 /**
  * Turn whatever is in the output array back into a boundary.
  *
- * @paragraph DevNotes
+ * @paragrap fd_recons_dev_notes
  * This function runs our inverse fft on whatever is in out, and deposits it
  * into in. It is necessary to make a few corrections for the negative numbers
  * that will be output by the inverse. I've tried to implement this in a way
