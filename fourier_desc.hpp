@@ -18,6 +18,7 @@ class FourierDescriptor : public shape2D
 
 		void reconstruct();
 		void reconstruct(unsigned int degree);
+		int size();
 		cv::Mat to_mat();
 
 };

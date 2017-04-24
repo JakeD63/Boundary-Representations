@@ -197,6 +197,9 @@ void FourierDescriptor::reconstruct(unsigned int degree)
 	reconstruct();
 }
 
+/**
+ * Generate a mat from our descriptors
+ */
 cv::Mat FourierDescriptor::to_mat()
 {
 	cv::Mat out_mat = cv::Mat::zeros(max_y + 2, max_x + 2, CV_8UC1);
@@ -206,6 +209,14 @@ cv::Mat FourierDescriptor::to_mat()
 	}
 	return out_mat;
 
+}
+
+/**
+ * Get the size of the underlying boundary
+ */
+int FourierDescriptor::size()
+{
+	return boundary.size();
 }
 
 

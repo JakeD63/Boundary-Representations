@@ -96,7 +96,6 @@ shape2D::shape2D(Mat img)
 
 	// Get the topmost leftmost
 	auto tm_lm = find_tm_lm(img);
-	//std::cout << "tm_lm value: " << tm_lm.x << " " << tm_lm.y << std::endl;
 
 	boundary.push_back(tm_lm);
 
