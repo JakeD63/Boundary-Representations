@@ -46,6 +46,7 @@ struct fd_gui {
 		desc_count = (int) floor(max_d / 2);
 		namedWindow(wName);
 		resizeWindow(wName, wWidth, wHeight);
+		imshow(wName, fd.to_mat());
 	};
 
 };	
