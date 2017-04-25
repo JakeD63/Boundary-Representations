@@ -8,18 +8,24 @@
 class FourierDescriptor : public shape2D
 {
 	private:
-		unsigned int N, cur_degree;
-		fftw_complex *out, *in, *orig;
-		fftw_plan plan, ifft_plan;
+		unsigned int N;i		/*< size of the problem */
+		unsigned int cur_degree;	/*< current descriptor count */
+		
+		fftw_complex *in; 		/*< complex input */
+		fftw_complex *orig;		/*< output with all descriptors */
+		fftw_complex *out;		/*< output with cur_degree descriptors */
+
+		fftw_plan plan;			/*< forward plan */
+		fftw_plan ifft_plan;		/*< inverse plan */
 
 	public:
-		FourierDescriptor(cv::Mat img);
-		~FourierDescriptor();
+		FourierDescriptor(cv::Mat img); /*< build FD from cv::Mat */
+		~FourierDescriptor();		/*< free fftw resources */
 
-		void reconstruct();
-		void reconstruct(unsigned int degree);
-		int size();
-		cv::Mat to_mat();
+		void reconstruct();		/*< rebuild all descriptors */		
+		void reconstruct(unsigned int degree); /*< rebuild degree descriptors */
+		int size(); 			/*< get boundary size */
+		cv::Mat to_mat();		/*< return an image */
 
 };
 
