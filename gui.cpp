@@ -41,19 +41,19 @@ void showSnGui(int trac, void* data) {
 }
 
 /**
- * This struct is a way to get out of using global variables to controll the
+ * @This struct is a way to get out of using global variables to controll the
  * fourier descriptor window
  */
 struct fd_gui {
 	int desc_count, /*!< number of descriptors, updated on trackbar movement */
-			max_d, /*!< max descriptor count for trackbar */
-			wHeight, /*!< height of window */
-			wWidth; /*!< width of window */
-	string wName; /*!< name of window */
+		max_d, 	/*!< max descriptor count for trackbar */
+		wHeight,/*!< height of window */
+		wWidth; /*!< width of window */
+	string wName; `	/*!< name of window */
 	FourierDescriptor fd; /*!< fourier descriptor to display */
 
 	/**
- 	* \brief constructor, set member variables and display initial window
+ 	* @brief constructor, set member variables and display initial window
  	*/
 	fd_gui(Mat img, int height, int width, string name) : 
 		fd(img),
@@ -66,6 +66,7 @@ struct fd_gui {
 		desc_count = (int) floor(max_d / 2);
 		namedWindow(wName);
 		resizeWindow(wName, wWidth, wHeight);
+		
 		//display initial window
 		imshow(wName, fd.to_mat());
 	};
@@ -73,7 +74,7 @@ struct fd_gui {
 };	
 
 /**
- * \brief is the callback function called by the trackbar to update the fourier
+ * @brief is the callback function called by the trackbar to update the fourier
  * descriptor window
  */
 void showFdGui(int trac, void* data)
