@@ -24,13 +24,13 @@
  *
  * @section usage_sec Usage
  * Once built, run the executable dip3 with one argument, an input image. Note
- * that there are some requirements on the input image. Isolating shapes was 
+ * that there are some requirements on the input image. Isolating shapes was
  * not a part of this project, the focus was on creating descriptors of shapes,
  * therefore the input images should be a single shape on a white background.
  *
  * @section impl_notes Implementation Notes
- * The code in this project was written as an educational exercise. The code 
- * is verbosely commented. Also, there are many places where more efficient 
+ * The code in this project was written as an educational exercise. The code
+ * is verbosely commented. Also, there are many places where more efficient
  * solutions were possible, but the authors chose to write code that was more
  * clear in intent.
  */
@@ -54,35 +54,34 @@ const string HELP = "usage: ./dip3 <imagefile>";
  */
 void preProcess(Mat bimg, Mat& res)
 {
-	cvtColor(bimg, bimg, CV_BGR2GRAY);
-	threshold(bimg, res, 128, 255, 1);
+    cvtColor(bimg, bimg, CV_BGR2GRAY);
+    threshold(bimg, res, 128, 255, 1);
 }
 
 int main(int argc, char **argv)
 {
-	if ( argc < 2 )
-	{
-		cout << HELP << endl;
-		return 1;
-	}
+    if ( argc < 2 ) {
+        cout << HELP << endl;
+        return 1;
+    }
 
-	Mat res_img;
-	Mat img = imread(argv[1]);
-	if( !img.data )
-		return 2;
+    Mat res_img;
+    Mat img = imread(argv[1]);
+    if( !img.data )
+        return 2;
 
-	preProcess(img, res_img); 
+    preProcess(img, res_img);
 
-	// TODO: Insert ShapeD code here
+    // TODO: Insert ShapeD code here
 
-		
-	fd_gui fg(res_img, 600, 600, string("Fourier Descriptors"));
-	createTrackbar("Descriptor Count", fg.wName, &fg.desc_count, fg.max_d, showFdGui, &fg);
 
-	shapenumber_gui sg(res_img, 600, 600, string("Shape Number"));
-	createTrackbar("Grid Scale", sg.wName, &sg.gridScale, sg.maxScale, showSnGui, &sg);
-	waitKey(0);
-	return 0;
+    fd_gui fg(res_img, 600, 600, string("Fourier Descriptors"));
+    createTrackbar("Descriptor Count", fg.wName, &fg.desc_count, fg.max_d, showFdGui, &fg);
+
+    shapenumber_gui sg(res_img, 600, 600, string("Shape Number"));
+    createTrackbar("Grid Scale", sg.wName, &sg.gridScale, sg.maxScale, showSnGui, &sg);
+    waitKey(0);
+    return 0;
 
 
 }

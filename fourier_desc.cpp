@@ -3,59 +3,57 @@
 /**
  * Construct a FourierDescriptor object
  *
- * Construct a shape2D then use the functions present in shape2D to build the 
+ * Construct a shape2D then use the functions present in shape2D to build the
  * base FFT from the boundary values.
  *
  * @return FourierDescriptor object
  */
-FourierDescriptor::FourierDescriptor(cv::Mat img) 
-	: shape2D(img)
+FourierDescriptor::FourierDescriptor(cv::Mat img)
+    : shape2D(img)
 {
-	// Set N to be the count of points in the boundary of the underlying
-	// shape2D object.
-	N = boundary.size();
+    // Set N to be the count of points in the boundary of the underlying
+    // shape2D object.
+    N = boundary.size();
 
-	// Scale the values headed into the FFT by 1/N, this is necessary because
-	// FFTW does not autoscale
-	double scale = 1.0 / N;
+    // Scale the values headed into the FFT by 1/N, this is necessary because
+    // FFTW does not autoscale
+    double scale = 1.0 / N;
 
-	// Obtain memory for input array, free in the destructor 
-	in = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N);
+    // Obtain memory for input array, free in the destructor
+    in = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N);
 
-	// Obtain memory for the original boundary, in case we need to recover it
-	// free in the destructor
-	orig = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N);
-	
-	// Obtain memory for output array, free	in the destructor
-	out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N);
+    // Obtain memory for the original boundary, in case we need to recover it
+    // free in the destructor
+    orig = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N);
 
-	// Walk the boundary, scale the values into the input array
-	for( int i=0; i < N; i++ )
-	{
+    // Obtain memory for output array, free	in the destructor
+    out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N);
 
-		// Generate our input array
-		in[i][0] = (double) boundary[i].x * scale;
-		in[i][1] = (double) boundary[i].y * scale;
-	}
+    // Walk the boundary, scale the values into the input array
+    for( int i=0; i < N; i++ ) {
 
-	// Generate our FFT plan, free in the destructor
-	plan = fftw_plan_dft_1d(N, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
+        // Generate our input array
+        in[i][0] = (double) boundary[i].x * scale;
+        in[i][1] = (double) boundary[i].y * scale;
+    }
 
-	// Run DFT on the inputs	
-	fftw_execute(plan);
+    // Generate our FFT plan, free in the destructor
+    plan = fftw_plan_dft_1d(N, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
 
-	for( int i=0; i < N; i++)
-	{
-		// Copy to our save array, in case we want to grow the discriptor
-		// count and rescue previously destroyed information
-		orig[i][0] = out[i][0];
-		orig[i][1] = out[i][1];
-	}
+    // Run DFT on the inputs
+    fftw_execute(plan);
 
-	// Obtain memory for the ifft_plan
-	ifft_plan = fftw_plan_dft_1d(N, out, in, FFTW_BACKWARD, FFTW_ESTIMATE);
+    for( int i=0; i < N; i++) {
+        // Copy to our save array, in case we want to grow the discriptor
+        // count and rescue previously destroyed information
+        orig[i][0] = out[i][0];
+        orig[i][1] = out[i][1];
+    }
 
-	return;	
+    // Obtain memory for the ifft_plan
+    ifft_plan = fftw_plan_dft_1d(N, out, in, FFTW_BACKWARD, FFTW_ESTIMATE);
+
+    return;
 }
 
 /**
@@ -69,54 +67,51 @@ FourierDescriptor::FourierDescriptor(cv::Mat img)
  */
 void FourierDescriptor::reconstruct()
 {
-	// set up a flag to track if we need to run a loop correcting neg
-	// numbers (we probably will).
-	bool ltz_flag = false;	
-	
-	// Run the plan backwards, outputing into our original in the new 
-	// complex values for the boundary	
-	fftw_execute(ifft_plan);
+    // set up a flag to track if we need to run a loop correcting neg
+    // numbers (we probably will).
+    bool ltz_flag = false;
 
-	// Throw out the old boundary data
-	boundary.clear();
+    // Run the plan backwards, outputing into our original in the new
+    // complex values for the boundary
+    fftw_execute(ifft_plan);
 
-	// Walk the output of our inverse fft and push all of the elements
-	// back into the boundary	
-	for(int i=0; i < N; i++)
-	{
+    // Throw out the old boundary data
+    boundary.clear();
 
-		// A problem I've seen in some peoples videos is a fuzzyness
-		// at edges. This is due to bad rounding (or simply explicit
-		// casting) note that we want to actually round here.
-		int xv = (int) floor(in[i][0] + 0.5);
-		int yv = (int) floor(in[i][1] + 0.5);
-		boundary.push_back(cv::Point(xv, yv));
+    // Walk the output of our inverse fft and push all of the elements
+    // back into the boundary
+    for(int i=0; i < N; i++) {
 
-		// If either the x or y value is negative, throw ltz_flag
-		if( !ltz_flag && xv < 0 || yv < 0)
-			ltz_flag = true;
+        // A problem I've seen in some peoples videos is a fuzzyness
+        // at edges. This is due to bad rounding (or simply explicit
+        // casting) note that we want to actually round here.
+        int xv = (int) floor(in[i][0] + 0.5);
+        int yv = (int) floor(in[i][1] + 0.5);
+        boundary.push_back(cv::Point(xv, yv));
 
-	}
+        // If either the x or y value is negative, throw ltz_flag
+        if( !ltz_flag && xv < 0 || yv < 0)
+            ltz_flag = true;
 
-	// Update all of our max and min values, in production code we'd want
-	// to handle this in the loop above.
-	update_extrema();
+    }
 
-	// If any of our values were less than zero
-	if( ltz_flag )
-	{
+    // Update all of our max and min values, in production code we'd want
+    // to handle this in the loop above.
+    update_extrema();
 
-		// Move the entire boundary by an amount the accounts
-		// for the extreme values
-		for(int i=0; i < N; i++) 
-		{
-			boundary[i].x -= min_x;
-			boundary[i].y -= min_y;
-		}
-		
-		// Store the new, correct extrema values
-		update_extrema();
-	}
+    // If any of our values were less than zero
+    if( ltz_flag ) {
+
+        // Move the entire boundary by an amount the accounts
+        // for the extreme values
+        for(int i=0; i < N; i++) {
+            boundary[i].x -= min_x;
+            boundary[i].y -= min_y;
+        }
+
+        // Store the new, correct extrema values
+        update_extrema();
+    }
 
 
 }
@@ -130,47 +125,43 @@ void FourierDescriptor::reconstruct()
  */
 void FourierDescriptor::reconstruct(unsigned int degree)
 {
-	// We cannot have more descriptors than points in the original boundary
-	if(degree > N)
-	{
-		std::cerr << "Max Descriptors(" << N << ") exceeded." 
-			<< std::endl;
-		return;
-	}
+    // We cannot have more descriptors than points in the original boundary
+    if(degree > N) {
+        std::cerr << "Max Descriptors(" << N << ") exceeded."
+                  << std::endl;
+        return;
+    }
 
-	// If we've got a request for more descriptors than used last time we'll
-	// need to recover the result of the original DFT from orig.
-	if( degree > cur_degree )
-	{
-		for(int i=0; i < N; i++)
-		{
-			out[i][0] = orig[i][0];
-			out[i][1] = orig[i][1];
-		}
+    // If we've got a request for more descriptors than used last time we'll
+    // need to recover the result of the original DFT from orig.
+    if( degree > cur_degree ) {
+        for(int i=0; i < N; i++) {
+            out[i][0] = orig[i][0];
+            out[i][1] = orig[i][1];
+        }
 
-	}
+    }
 
-	// Keep trag of how many descriptors remain
-	cur_degree = degree;
+    // Keep trag of how many descriptors remain
+    cur_degree = degree;
 
-	// Calculate how many descriptors we want zeroed out
-	int elim = N - degree;
+    // Calculate how many descriptors we want zeroed out
+    int elim = N - degree;
 
-	// Calculate the start offset in the array
-	int start = (int) floor(degree / 2);
+    // Calculate the start offset in the array
+    int start = (int) floor(degree / 2);
 
-	// Calculate how far to walk in the array
-	int end = start + elim;
+    // Calculate how far to walk in the array
+    int end = start + elim;
 
-	// Walk from start to end zeroing out the array
-	for( int s = start; s < end; s++)
-	{
-		out[s][0] = 0.0;
-		out[s][1] = 0.0;
-	}
+    // Walk from start to end zeroing out the array
+    for( int s = start; s < end; s++) {
+        out[s][0] = 0.0;
+        out[s][1] = 0.0;
+    }
 
-	// Call reconstruct on our now output array
-	reconstruct();
+    // Call reconstruct on our now output array
+    reconstruct();
 }
 
 /**
@@ -178,12 +169,11 @@ void FourierDescriptor::reconstruct(unsigned int degree)
  */
 cv::Mat FourierDescriptor::to_mat()
 {
-	cv::Mat out_mat = cv::Mat::zeros(max_y + 2, max_x + 2, CV_8UC1);
-	for ( unsigned int i = boundary.size(); i-- > 0; )
-	{
-		out_mat.at<uchar>(boundary[i]) = 255;
-	}
-	return out_mat;
+    cv::Mat out_mat = cv::Mat::zeros(max_y + 2, max_x + 2, CV_8UC1);
+    for ( unsigned int i = boundary.size(); i-- > 0; ) {
+        out_mat.at<uchar>(boundary[i]) = 255;
+    }
+    return out_mat;
 
 }
 
@@ -192,7 +182,7 @@ cv::Mat FourierDescriptor::to_mat()
  */
 int FourierDescriptor::size()
 {
-	return boundary.size();
+    return boundary.size();
 }
 
 
@@ -200,14 +190,14 @@ int FourierDescriptor::size()
  * \brief Close out allocated resources for FD
  */
 FourierDescriptor::~FourierDescriptor()
-{	
-	
-	fftw_free(orig); 
-	fftw_free(out);
-	fftw_free(in);
-	fftw_destroy_plan(ifft_plan);
-	fftw_destroy_plan(plan);
-	/* return; */
+{
+
+    fftw_free(orig);
+    fftw_free(out);
+    fftw_free(in);
+    fftw_destroy_plan(ifft_plan);
+    fftw_destroy_plan(plan);
+    /* return; */
 
 }
 
