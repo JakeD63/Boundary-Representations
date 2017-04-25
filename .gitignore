@@ -3,6 +3,7 @@ Makefile
 .idea
 cmake-build-debug
 build
+*.orig
 *.cmake
 *.jpg
 *.png
