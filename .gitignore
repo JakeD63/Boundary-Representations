@@ -5,7 +5,12 @@ cmake-build-debug
 build
 *.cmake
 *.jpg
+*.png
 *.swp
+*.gif
+tags
+html
+latex
 
 # Compiled Object files
 *.slo
@@ -36,3 +41,4 @@ build
 *.exe
 *.out
 *.app
+

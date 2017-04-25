@@ -1,29 +1,58 @@
-//
-// Created by jake on 4/14/17.
-//
-
 #include "ShapeNumber.hpp"
 
-ShapeNumber::ShapeNumber(cv::Mat img, int gridScale) : shape2D(img), gridScale(gridScale) {
-	scaleBoundary();
-	genChainCode();
-	getMinMagnitude();
-	normalizeRot();
-
+/**
+ * \brief Construct ShapeNumber Object
+ *
+ * Take in image and scale of grid and use it to construct object.
+ * After getting boundary from shape2D, scale it, and normalize the code.
+ */
+ShapeNumber::ShapeNumber(cv::Mat img, int scale) : shape2D(img) {
+	setGridScale(scale); //ensure the grid is not too large
+	scaleBoundary(); //scale the boundary
+	genChainCode(); //generate chain code based on scaled boundary
+	getMinMagnitude(); //normalize for starting point
+	normalizeRot(); //normalize for rotation
 }
 
-//make grid larger, so we only take
-//a sampling of points along the boundary
-//this allows similar shapes to have much
-//similar chain codes
+/**
+ * \brief Ensure the grid scale is within range
+ *
+ * Check scale against the max grid value.
+ * This is done because too large a grid makes
+ * the chain code too small to use or display
+ */
+void ShapeNumber::setGridScale(int scale) {
+	int max = this->GRID_MAX;
+	if(scale > max)
+		this->gridScale = max;
+	else
+		this->gridScale = scale;
+}
 
-//take distance to each corner from point
-//closest corner is added to new boundary point list
+/**
+ * \brief returns the max scale
+ *
+ * Returns the max grid scale the object will allow. This is
+ * mostly used for the gui trackbar max value.
+ */
+int ShapeNumber::getMaxGridScale() {
+	return this->GRID_MAX;
+}
+
+/**
+ * \brief Scale image boundary to new grid size
+ *
+ * We make the grid larger than 1x1, then calculate
+ * the closest grid corner from each point.
+ * EX. (12, 33) with a scale of 5 becomes (10, 35).
+ * This is done to make similar shapes have similar codes
+ */
 void ShapeNumber::scaleBoundary() {
 	Point c, tl, tr, bl, br;
 	vector<double> distances; //tl, tr, bl, br
-	vector<Point> boundary;
+	vector<Point> temp_bound;
 	int min_p;
+	//walk every point in boundary, calculating nearest grid corner
 	for (unsigned int i = 0; i < this->boundary.size(); i++) {
 		c = this->boundary.at(i);
 		//upper left
@@ -44,20 +73,22 @@ void ShapeNumber::scaleBoundary() {
 		distances.push_back(distance(c, tr));
 		distances.push_back(distance(c, bl));
 		distances.push_back(distance(c, br));
-
+		//get the min distance
 		min_p = (int) std::distance(distances.begin(), min_element(distances.begin(), distances.end()));
+
+		//use min distance to get point to add to boundary
 		switch (min_p) {
 			case 0:
-				boundary.push_back(tl);
+				temp_bound.push_back(tl);
 				break;
 			case 1:
-				boundary.push_back(tr);
+				temp_bound.push_back(tr);
 				break;
 			case 2:
-				boundary.push_back(bl);
+				temp_bound.push_back(bl);
 				break;
 			case 3:
-				boundary.push_back(br);
+				temp_bound.push_back(br);
 				break;
 			default:
 				cerr << "scaleBoundary: min_p not in range 0-3: " << min_p << endl;
@@ -67,23 +98,31 @@ void ShapeNumber::scaleBoundary() {
 		distances.clear();
 	}
 	//add unique points to scaled boundary
-	for (unsigned int i = 0; i < boundary.size() - 1; i++) {
-		if (!(boundary.at(i) == boundary.at(i + 1)))
-			scaledBoundary.push_back(boundary[i]);
+	for (unsigned int i = 0; i < temp_bound.size() - 1; i++) {
+		if (!(temp_bound.at(i) == temp_bound.at(i + 1)))
+			scaledBoundary.push_back(temp_bound[i]);
 	}
 
 }
 
-//use boundary to generate chain code
-//directions and method from page 800
+/**
+ * \brief Generate a chain code from boundary
+ *
+ * Walk the boundary storing the direction from
+ * the current point to the next. Directions are represented as
+ * 0-7 counterclockwise, with 0 being ->
+ */
 void ShapeNumber::genChainCode() {
 	Point c, n;
 	int xDiff, yDiff, code = 0;
+	//walk the boundary storing directions
 	for (unsigned int i = 0; i < scaledBoundary.size() - 1; i++) {
+		//get differences in x and y from current and next point
 		c = scaledBoundary.at(i);
 		n = scaledBoundary.at(i + 1);
 		xDiff = n.x - c.x;
 		yDiff = n.y - c.y;
+		//use those differences to set direction
 		if (xDiff == gridScale) {
 			if (yDiff == gridScale)
 				code = 1;
@@ -108,19 +147,20 @@ void ShapeNumber::genChainCode() {
 	}
 }
 
-//treat vector as integer
-//get min of all rotations
-//NOTE: this uses string to convert
-//a vector to an int for comparison
-//it is super gross
+/**
+ * \brief Gets minimum magnitude of chain code
+ *
+ * Rotate the chain code until we get one that is smaller than
+ * the rest if they are treated as integers
+ */
 void ShapeNumber::getMinMagnitude() {
 	vector<int> min = shapeNumber; //set starting min
-	vector<int> curRot = shapeNumber;
+	vector<int> curRot = shapeNumber; //current rotation
+	//rotate n times
 	for(int i = 0; i < shapeNumber.size(); i++) {
-
+		//store min rotation
 		if(compareCodes(curRot, min) == -1)
 			min = curRot;
-
 		//rotate again
 		rotate(curRot.begin(), curRot.end()-1, curRot.end());
 	}
@@ -128,13 +168,19 @@ void ShapeNumber::getMinMagnitude() {
 }
 
 
-//take first difference of directions
-//in counterclockwise direction
-// c[i+1] - c[i] (+8 if neg)
+/**
+ * \brief Normalize code for rotation
+ *
+ * Store difference between rotations in code.
+ * This makes the code rotation invariant, so it can
+ * more easily be used and compared to other codes.
+ */
 void ShapeNumber::normalizeRot() {
 	vector<int> tempCode;
 	int r;
 	for (unsigned int i = 0; i < this->shapeNumber.size() - 1; i++) {
+		//difference in directions is p[i + 1] - p[i]
+		//if negative, add 8
 		r = this->shapeNumber.at(i + 1) - this->shapeNumber.at(i);
 		if (r < 0)
 			r += 8;
@@ -142,47 +188,94 @@ void ShapeNumber::normalizeRot() {
 
 	}
 	this->shapeNumber = tempCode;
-
 }
 
-//! to_mat generates a normalized mat with our boundary in it.
+/**
+ * \brief Rescale boundary size. This is implemented so you can
+ * resize the grid instead of having to create a new object.
+ *
+ * Clears object data and re-does the constructor
+ */
+void ShapeNumber::rescaleBoundary(int scale) {
+	this->scaledBoundary.clear();
+	this->shapeNumber.clear();
+
+	setGridScale(scale);
+	scaleBoundary();
+	genChainCode();
+	getMinMagnitude();
+	normalizeRot();
+}
+
+/**
+ * \brief Turns scaled boundary into mat image for display
+ *
+ * redraws points onto img and returns it
+ */
 Mat ShapeNumber::to_mat() {
-	Mat output = Mat::zeros(max_y + 2, max_x + 2, CV_8UC1);
-	for(unsigned int i = 0; i < scaledBoundary.size(); i++) {
-		output.at<uchar>(scaledBoundary[i]) = 255;
-	}
-	return output;
+	this->img = redrawPoints(this->img);
+	return this->img;
 }
 
-//return a Mat image with points connected with
-//white line
+/**
+ * \brief Turns scaled boundary into mat image for display.
+ * The image has its points connected
+ * */
 Mat ShapeNumber::to_connected_mat() {
 	//use cvLine to draw lines between all points
-	Mat img = this->to_mat();
+	this->connectedImg = this->redrawPoints(this->connectedImg);
 	for(int i = 0; i < scaledBoundary.size() - 1; i++) {
-		line(img, scaledBoundary.at(i), scaledBoundary.at(i+1), Scalar(255,255,255),1,CV_AA );
+		line(this->connectedImg, scaledBoundary.at(i), scaledBoundary.at(i+1), Scalar(255,255,255),1,CV_AA );
+	}
+	return this->connectedImg;
+}
+
+/**
+ * \brief Draws scaled boundary onto image
+ *
+ * Walks boundary drawing points from scaled boundary.
+ * NOTE: the = operator is overloaded for Mat images of the same size,
+ * it overwrites img instead of construcing a new one. This means it is more
+ * memory efficient than constructing a new image.
+ */
+Mat ShapeNumber::redrawPoints(Mat img) {
+	img = Mat::zeros(max_y + 2, max_x + 2, CV_8UC1);
+	for(unsigned int i = 0; i < scaledBoundary.size(); i++) {
+		img.at<uchar>(scaledBoundary[i]) = 255;
 	}
 	return img;
 }
 
-//get shape number
+/**
+ * \brief Returns the shape number vector
+ */
 vector<int> ShapeNumber::getCode() {
 	return this->shapeNumber;
 }
 
-//get specific number from shape number
+/**
+ * \brief Get specific number from code
+ */
 int ShapeNumber::at(unsigned int i) {
 	return this->shapeNumber.at(i);
 }
 
-//get number of digits in shape number
+/**
+ * \brief Get the size of the shape number
+ */
 int ShapeNumber::size() {
 	return (int) this->shapeNumber.size();
 }
 
-//convert chain code vector into integer
-//for magnitude comparisons
+/**
+ * \brief Compare the integer value of two codes.
+ * Used for normalization
+ *
+ * Walks both vectors checking for differences
+ * Returns 1 for larger, -1 for less than, 0 for equal
+ */
 int ShapeNumber::compareCodes(vector<int> a, vector<int> b) {
+	//to keep things simple for our purposes, only compare vectors of the same size
 	if(a.size() != b.size()) {
         cerr << "compareCodes: vector sizes must be equal" << endl;
         exit(0);
@@ -197,36 +290,52 @@ int ShapeNumber::compareCodes(vector<int> a, vector<int> b) {
   return 0;
 }
 
-//get distance between two 2D points
+/**
+ * \brief Calculate the distance between two points
+*/
 double ShapeNumber::distance(Point a, Point b) {
 	return sqrt(pow((b.x - a.x), 2) + pow((b.y - a.y), 2));
 }
 
-//rounds n up to nearest multiple of m
+/**
+ * \brief Rounds n up to nearest multiple of m
+ *
+ * This is used for grid rescaling.
+ * @param n number to round
+ * @param m multiple to round to
+ */
 int ShapeNumber::roundUp(int n, int m) {
 	int r;
+	//if multiple is 0, return 0
 	if (m == 0)
 		return n;
-
+	//if n is a multiple of m, return 0
 	r = n % m;
 	if (r == 0)
 		return n;
+	//return n + m - remainder
 	return n + m - r;
 }
 
-//rounds n down to nearest multiple of m
+/**
+ * \brief rounds down using roundUp function
+ */
 int ShapeNumber::roundDown(int n, int m) {
 	return roundUp(n - m, m);
 }
 
-//print operator for shape number
+/**
+ * \brief Overloaded print operator for shape number
+ */
 ostream &operator<<(ostream &os, const ShapeNumber &s) {
 	for (auto i : s.shapeNumber)
 		os << i;
 	return os;
 }
 
-//access operator for shape number
+/**
+ * \brief Overloaded [] operator for shape number vector
+ */
 int& ShapeNumber::operator[](unsigned int i) {
 	return this->shapeNumber.at(i);
 }

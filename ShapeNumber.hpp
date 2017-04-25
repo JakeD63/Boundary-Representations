@@ -1,22 +1,18 @@
-//
-// Created by jake on 4/14/17.
-//
-
 #ifndef DIP3_CHAINCODE_H
 #define DIP3_CHAINCODE_H
-
 #include "shape2d.hpp"
 
 using namespace std;
 using namespace cv;
 
+/*! ShapeNumber calculates the shape number a boundary that has been rescaled to a different grid size */
 class ShapeNumber : public shape2D {
 public:
-	ShapeNumber(Mat img, int scale = 5);
-
+	ShapeNumber(Mat img, int scale = 1);
+	void rescaleBoundary(int scale);
 	Mat to_mat();
 	Mat to_connected_mat();
-
+	int getMaxGridScale();
 	vector<int> getCode();
 	int at(unsigned int i);
 	int size();
@@ -24,6 +20,7 @@ public:
 	int& operator[](unsigned int i);
 
 private:
+	void setGridScale(int scale);
 	void scaleBoundary();
 
 	void genChainCode();
@@ -36,15 +33,17 @@ private:
 
 	double distance(Point a, Point b);
 
+	Mat redrawPoints(Mat img);
 	int roundUp(int n, int m);
 
 	int roundDown(int n, int m);
 
-	int gridScale;
-	std::vector<int> shapeNumber;
-	std::vector<Point> scaledBoundary;
-
-
+	Mat img, /*!<image to draw points on */
+		connectedImg; /*!<image with points connected */
+	int gridScale; /*!< scale of grid size (ex, 5x5) */
+	const int GRID_MAX = 100; /*!< max grid scale allowed */
+	std::vector<int> shapeNumber; /*!< shape number of boundary */
+	std::vector<Point> scaledBoundary; /*!< boundary after rescaling of grid */
 };
 
 
