@@ -42,5 +42,3 @@ latex
 *.out
 *.app
 
-#Doxygen
-Doxyfile
