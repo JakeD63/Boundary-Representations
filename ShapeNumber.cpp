@@ -46,6 +46,8 @@ void ShapeNumber::setGridScale(int scale)
     int max = this->GRID_MAX;
     if(scale > max)
         this->gridScale = max;
+    else if(scale == 0)
+        this->gridScale = 1;
     else
         this->gridScale = scale;
 }
