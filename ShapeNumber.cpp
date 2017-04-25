@@ -7,11 +7,28 @@
  * After getting boundary from shape2D, scale it, and normalize the code.
  */
 ShapeNumber::ShapeNumber(cv::Mat img, int scale) : shape2D(img) {
+	this->setup(scale);
+}
+
+/**
+ * \brief Rescale boundary size. This is implemented so you can
+ * resize the grid instead of having to create a new object.
+ *
+ * Clears object data and re-does the constructor
+ */
+void ShapeNumber::rescaleBoundary(int scale) {
+	this->scaledBoundary.clear();
+	this->shapeNumber.clear();
+	this->setup(scale);
+
+}
+
+void ShapeNumber::setup(int scale) {
 	setGridScale(scale); //ensure the grid is not too large
 	scaleBoundary(); //scale the boundary
 	genChainCode(); //generate chain code based on scaled boundary
-	getMinMagnitude(); //normalize for starting point
 	normalizeRot(); //normalize for rotation
+	getMinMagnitude(); //normalize for starting point
 }
 
 /**
@@ -167,6 +184,28 @@ void ShapeNumber::getMinMagnitude() {
 	this->shapeNumber = min;
 }
 
+/**
+ * \brief Compare the integer value of two codes.
+ * Used for normalization
+ *
+ * Walks both vectors checking for differences
+ * Returns 1 for larger, -1 for less than, 0 for equal
+ */
+int ShapeNumber::compareCodes(vector<int> a, vector<int> b) {
+	//to keep things simple for our purposes, only compare vectors of the same size
+	if(a.size() != b.size()) {
+		cerr << "compareCodes: vector sizes must be equal" << endl;
+		exit(0);
+	}
+	//walk a and b until numbers are different, then return a<b
+	for(int i = 0; i < a.size(); i++) {
+		if(a[i] < b[i])
+			return -1;
+		else if(a[i] > b[i])
+			return 1;
+	}
+	return 0;
+}
 
 /**
  * \brief Normalize code for rotation
@@ -188,23 +227,6 @@ void ShapeNumber::normalizeRot() {
 
 	}
 	this->shapeNumber = tempCode;
-}
-
-/**
- * \brief Rescale boundary size. This is implemented so you can
- * resize the grid instead of having to create a new object.
- *
- * Clears object data and re-does the constructor
- */
-void ShapeNumber::rescaleBoundary(int scale) {
-	this->scaledBoundary.clear();
-	this->shapeNumber.clear();
-
-	setGridScale(scale);
-	scaleBoundary();
-	genChainCode();
-	getMinMagnitude();
-	normalizeRot();
 }
 
 /**
@@ -265,29 +287,6 @@ int ShapeNumber::at(unsigned int i) {
  */
 int ShapeNumber::size() {
 	return (int) this->shapeNumber.size();
-}
-
-/**
- * \brief Compare the integer value of two codes.
- * Used for normalization
- *
- * Walks both vectors checking for differences
- * Returns 1 for larger, -1 for less than, 0 for equal
- */
-int ShapeNumber::compareCodes(vector<int> a, vector<int> b) {
-	//to keep things simple for our purposes, only compare vectors of the same size
-	if(a.size() != b.size()) {
-        cerr << "compareCodes: vector sizes must be equal" << endl;
-        exit(0);
-    }
-  //walk a and b until numbers are different, then return a<b
-  for(int i = 0; i < a.size(); i++) {
-    if(a[i] < b[i])
-      return -1;
-    else if(a[i] > b[i])
-      return 1;
-  }
-  return 0;
 }
 
 /**

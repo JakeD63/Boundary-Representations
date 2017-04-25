@@ -20,6 +20,7 @@ public:
 	int& operator[](unsigned int i);
 
 private:
+	void setup(int scale);
 	void setGridScale(int scale);
 	void scaleBoundary();
 
