@@ -26,7 +26,6 @@ struct shapenumber_gui {
         resizeWindow(wName, 600, 600);
         //show shape number
         imshow(wName, sn.to_mat());
-        std::cout << "Shape Number: " << sn << std::endl;
     }
 
 };
@@ -39,7 +38,6 @@ void showSnGui(int trac, void* data)
     shapenumber_gui* temp = (shapenumber_gui*) data;
     temp->sn.rescaleBoundary(trac); //rescale bondary based on trackbar position
     imshow(temp->wName, temp->sn.to_mat());
-    std::cout << "Shape Number: " << temp->sn << std::endl;
 }
 
 /**
