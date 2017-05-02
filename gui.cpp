@@ -36,12 +36,12 @@ struct shapenumber_gui {
 void showSnGui(int trac, void* data)
 {
     shapenumber_gui* temp = (shapenumber_gui*) data;
-    temp->sn.rescaleBoundary(trac); //rescale bondary based on trackbar position
+    temp->sn.rescaleBoundary(trac); //rescale boundary based on trackbar position
     imshow(temp->wName, temp->sn.to_mat());
 }
 
 /**
- * @This struct is a way to get out of using global variables to controll the
+ * @This struct is a way to get out of using global variables to control the
  * fourier descriptor window
  */
 struct fd_gui {
